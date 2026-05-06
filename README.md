@@ -66,9 +66,7 @@ the [recipe authoring docs](https://sparkrun.dev/recipes/overview/) for the full
 
 ```bash
 # Add this registry
-sparkrun recipe add-registry iromu \
-  --url https://github.com/iromu/recipe-registry.git \
-  --subpath recipes
+sparkrun registry add https://github.com/iromu/recipe-registry.git
   
 # List available community recipes
 sparkrun list @iromu
