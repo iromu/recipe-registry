@@ -1,0 +1,7 @@
+registries:
+  - name: iromu
+    description: Personal registry for sparkrun
+    recipes: recipes
+    tuning: tuning
+    benchmarks: benchmarking
+    visible: false
