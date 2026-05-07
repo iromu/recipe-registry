@@ -1,6 +1,6 @@
 === SUMMARY ===
-  Pass:                  2/3  (3 errored)
-  Primary lines matched: 43/60
+  Pass:                  8/9  (7 errored)
+  Primary lines matched: 161/180
   Hallucinated lines:    16
   Bonus (extra correct): 0
 
@@ -11,3 +11,13 @@
     ✓ matcherFromGroupMatchers                 matched=20/20  halluc= 0  bonus= 0
     ! init                                     ERROR  empty response (200 OK but no content; reasoning models often need more max_tokens — try --max-tokens 8000)
     ! then                                     ERROR  empty response (200 OK but no content; reasoning models often need more max_tokens — try --max-tokens 8000)
+    ! dataAttr                                 ERROR  empty response (200 OK but no content; reasoning models often need more max_tokens — try --max-tokens 8000)
+    ! buildFragment                            ERROR  empty response (200 OK but no content; reasoning models often need more max_tokens — try --max-tokens 8000)
+    ! domManip                                 ERROR  empty response (200 OK but no content; reasoning models often need more max_tokens — try --max-tokens 8000)
+    ✓ boxModelAdjustment                       matched=18/20  halluc= 0  bonus= 0
+    ✓ defaultPrefilter                         matched=20/20  halluc= 0  bonus= 0
+    ✓ propFilter                               matched=20/20  halluc= 0  bonus= 0
+    ✓ val                                      matched=20/20  halluc= 0  bonus= 0
+    ✓ ajaxConvert                              matched=20/20  halluc= 0  bonus= 0
+    ✓ done                                     matched=20/20  halluc= 0  bonus= 0
+    ! parseHTML                                ERROR  empty response (200 OK but no content; reasoning models often need more max_tokens — try --max-tokens 8000)
