@@ -1,5 +1,5 @@
-MODEL_TAG="Qwen/Qwen3.5-0.8B"
-MODEL_RECIPE="qwen3.5-0.8b-bf16-vllm"
+MODEL_TAG="Jackrong/Qwopus3.6-35B-A3B-v1"
+MODEL_RECIPE="qwopus3.6-35B-A3B-v1-bf16-mtp-vllm"
 MODEL_PORT=8000
 
 uvx tool-eval-bench --perf --model ${MODEL_TAG} --backend vllm  \
