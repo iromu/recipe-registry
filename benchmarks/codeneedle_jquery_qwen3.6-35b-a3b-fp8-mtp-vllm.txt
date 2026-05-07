@@ -1,0 +1,13 @@
+=== SUMMARY ===
+  Pass:                  2/3  (3 errored)
+  Primary lines matched: 43/60
+  Hallucinated lines:    16
+  Bonus (extra correct): 0
+
+  per-function:
+    ✓ DOMEval                                  matched=20/20  halluc= 0  bonus= 0
+    ! find                                     ERROR  empty response (200 OK but no content; reasoning models often need more max_tokens — try --max-tokens 8000)
+    ✗ PSEUDO                                   matched= 3/20  halluc=16  bonus= 0
+    ✓ matcherFromGroupMatchers                 matched=20/20  halluc= 0  bonus= 0
+    ! init                                     ERROR  empty response (200 OK but no content; reasoning models often need more max_tokens — try --max-tokens 8000)
+    ! then                                     ERROR  empty response (200 OK but no content; reasoning models often need more max_tokens — try --max-tokens 8000)
