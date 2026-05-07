@@ -1,0 +1,18 @@
+=== SUMMARY ===
+Pass:                  11/11
+Primary lines matched: 217/220
+Hallucinated lines:    1
+Bonus (extra correct): 2
+
+per-function:
+✓ _url_collapse_path                       matched=19/20  halluc= 0  bonus= 1
+✓ parse_request                            matched=19/20  halluc= 0  bonus= 0
+✓ handle_one_request                       matched=19/20  halluc= 1  bonus= 1
+✓ send_error                               matched=20/20  halluc= 0  bonus= 0
+✓ log_message                              matched=20/20  halluc= 0  bonus= 0
+✓ send_head                                matched=20/20  halluc= 0  bonus= 0
+✓ list_directory                           matched=20/20  halluc= 0  bonus= 0
+✓ translate_path                           matched=20/20  halluc= 0  bonus= 0
+✓ guess_type                               matched=20/20  halluc= 0  bonus= 0
+✓ is_cgi                                   matched=20/20  halluc= 0  bonus= 0
+✓ run_cgi                                  matched=20/20  halluc= 0  bonus= 0
