@@ -23,7 +23,7 @@ defaults:
   attention_backend: flashinfer
   tool_call_parser: qwen3_coder
   reasoning_parser: qwen3
-  speculative_config: '{"method": "mtp", "num_speculative_tokens": 2}'
+  speculative_config: '{"method": "mtp", "num_speculative_tokens": 3}'
 
 env:
   VLLM_MARLIN_USE_ATOMIC_ADD: "1"
