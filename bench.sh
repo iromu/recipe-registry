@@ -1,8 +1,8 @@
-MODEL_TAG="Qwen3.6-35B-A3B"
-MODEL_RECIPE="qwen3.6-35b-a3b-fp8-mtp-vllm"
-MODEL_PORT=4000
+MODEL_TAG="unsloth/Qwen3.6-35B-A3B-GGUF"
+MODEL_RECIPE="qwen3.6-35b-a3b-q8_0-llama-cpp"
+MODEL_PORT=8000
 
-uvx tool-eval-bench --perf --model ${MODEL_TAG} --backend litellm  \
+uvx tool-eval-bench --perf --model ${MODEL_TAG} --backend llamacpp  \
   --base-url http://spark.local:${MODEL_PORT}
 
 latest_file=$(find runs -name '*.md' -type f | sort | tail -n1)
