@@ -1,5 +1,5 @@
 MODEL_TAG="unsloth/Qwen3.6-35B-A3B-GGUF"
-MODEL_RECIPE="qwen3.6-35b-a3b-q8_0-llama-cpp"
+MODEL_RECIPE="qwen3.6-35b-a3b-mxfp4_moe-llama-cpp"
 MODEL_PORT=8000
 
 uvx tool-eval-bench --perf --model ${MODEL_TAG} --backend llamacpp  \
