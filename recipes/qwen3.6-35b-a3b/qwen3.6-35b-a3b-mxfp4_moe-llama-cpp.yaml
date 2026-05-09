@@ -1,7 +1,7 @@
 recipe_version: "2"
 model: unsloth/Qwen3.6-35B-A3B-GGUF:MXFP4_MOE
 runtime: llama-cpp
-container: scitrera/dgx-spark-llama-cpp:latest
+container: scitrera/dgx-spark-llama-cpp:b9085-cu131
 
 metadata:
   description: unsloth/Qwen3.6-35B-A3B-GGUF:MXFP4_MOE
@@ -12,6 +12,7 @@ defaults:
   port: 8000
   host: 0.0.0.0
   max_model_len: 262144
+  tensor_parallel: 1
   kv_cache_dtype: q8_0
   n_gpu_layers: 999
 
@@ -25,6 +26,10 @@ command: |
       --cache-type-k {kv_cache_dtype} \
       --cache-type-v {kv_cache_dtype} \
       --n-gpu-layers {n_gpu_layers} \
+      --flash-attn on \
+      --jinja \
+      --no-webui \
+      --no-mmap \
       --temp 0.6 \
       --top-p 0.95 \
       --top-k 20 \
