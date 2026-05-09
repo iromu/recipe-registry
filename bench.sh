@@ -1,5 +1,5 @@
-MODEL_TAG="Qwen/Qwen3.6-27B-FP8"
-MODEL_RECIPE="qwen3.6-27b-fp8-vllm"
+MODEL_TAG="Qwen/Qwen3.6-35B-A3B-FP8"
+MODEL_RECIPE="qwen3.6-35b-a3b-fp8-mtp-vllm"
 MODEL_PORT=8000
 
 uvx tool-eval-bench --perf --model ${MODEL_TAG} --backend llamacpp  \
