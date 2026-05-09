@@ -1,0 +1,37 @@
+recipe_version: "2"
+model: unsloth/Qwen3.6-27B-GGUF:Q8_0
+runtime: llama-cpp
+container: scitrera/dgx-spark-llama-cpp:latest
+
+metadata:
+  description: unsloth/Qwen3.6-27B-GGUF:Q8_0
+  model_params: 27B
+  model_dtype: Q8_0
+
+defaults:
+  port: 8000
+  host: 0.0.0.0
+  max_model_len: 262144
+  kv_cache_dtype: q8_0
+  n_gpu_layers: 999
+
+command: |
+  llama-server \
+      -hf {model} \
+      --host {host} \
+      --port {port} \
+      --alias "unsloth/Qwen3.6-27B-GGUF" \
+      --ctx-size {max_model_len} \
+      --cache-type-k {kv_cache_dtype} \
+      --cache-type-v {kv_cache_dtype} \
+      --n-gpu-layers {n_gpu_layers} \
+      --flash-attn on \
+      --jinja \
+      --no-webui \
+      --no-mmap \
+      --temp 0.6 \
+      --top-p 0.95 \
+      --top-k 20 \
+      --min-p 0.00 \
+      --chat-template-kwargs '{"preserve_thinking":true}'
+
