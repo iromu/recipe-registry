@@ -22,7 +22,6 @@ defaults:
   attention_backend: flashinfer
   tool_call_parser: qwen3_xml
   reasoning_parser: qwen3
-  speculative_config: '{"method": "mtp", "num_speculative_tokens": 1}'
 
 env:
   VLLM_MARLIN_USE_ATOMIC_ADD: "1"
@@ -34,7 +33,6 @@ command: |
     --max-model-len {max_model_len} \
     --max-num-batched-tokens {max_num_batched_tokens} \
     --trust-remote-code \
-    --language-model-only \
     --chat-template fixed_chat_template.jinja \
     --gpu-memory-utilization {gpu_memory_utilization} \
     --enable-auto-tool-choice \
@@ -43,7 +41,6 @@ command: |
     --kv-cache-dtype {kv_cache_dtype} \
     --load-format {load_format} \
     --attention-backend {attention_backend} \
-    --speculative-config '{speculative_config}' \
     --enable-prefix-caching \
     -tp {tensor_parallel} \
     -pp {pipeline_parallel} \
