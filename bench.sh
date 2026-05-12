@@ -1,5 +1,5 @@
-MODEL_TAG="google/gemma-3-12b-it"
-MODEL_RECIPE="gemma3-12b-it-bf16-vllm"
+MODEL_TAG="Qwen/Qwen3.6-35B-A3B-FP8"
+MODEL_RECIPE="qwen3.6-35b-a3b-fp8-mtp-vllm"
 # Ports:
 #   vllm 8000
 #   litellm 4000
