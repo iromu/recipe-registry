@@ -16,7 +16,7 @@ defaults:
   host: 0.0.0.0
   tensor_parallel: 1
   max_model_len: 196608
-  gpu_memory_utilization: 0.76
+  gpu_memory_utilization: 0.84
   max_num_batched_tokens: 16384
   max-num-seqs: 16
   load_format: instanttensor
@@ -37,14 +37,16 @@ command: |
     --load-format {load_format} \
     --enable-prefix-caching \
     --enable-chunked-prefill \
+    --speculative-config '{speculative_config}' \
     --enable-auto-tool-choice \
     --tool-call-parser {tool_call_parser} \
     --reasoning-parser {reasoning_parser} \
     --max-num-batched-tokens {max_num_batched_tokens} \
-    --max-num-seqs {max-num-seqs} 
+    --max-num-seqs {max-num-seqs}  \
     --dtype bfloat16 \
     --kv-cache-dtype fp8_e4m3 \
     --trust-remote-code \
+    --attention-backend flashinfer \
     --chat-template unsloth.jinja \
     -tp {tensor_parallel} \
     --generation-config auto \
