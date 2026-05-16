@@ -1,0 +1,135 @@
+# docker-compose.spark-xs.yml — DGX Spark winning config (v4, 2026-05-10)
+#
+# Current recommendation:
+#   image ghcr.io/aeon-7/vllm-aeon-ultimate-dflash:qwen36-v4
+#   XS multimodal body + DFlash k=15 + FlashInfer 0.6.11 + patched CUTLASS NVFP4
+#
+# Headline v4 benchmark signal on DGX Spark:
+#   average c=1 decode 37.56 tok/s vs 10.49 tok/s dirty stock eager baseline (3.58×)
+#   best c=1 decode 49.48 tok/s on extraction / JSON
+#   reasoning c=1 decode 42.41 tok/s
+#   c=16 extraction / JSON 219.11 tok/s aggregate with 43.2 ms TPOT
+#
+# The XS body has a grafted MTP head, but the Spark recipe intentionally uses
+# external DFlash k=15. Keep this compose focused on the benchmarked v4 path:
+# XS body, modelopt quantization, CUTLASS NVFP4, CUDA graphs, Qwen3 reasoning,
+# Qwen3-Coder tool calls, and the DFlash drafter.
+#
+# Image:       ghcr.io/aeon-7/vllm-aeon-ultimate-dflash:qwen36-v4
+# Hardware:    DGX Spark (NVIDIA GB10, 128 GB unified memory, sm_121a)
+#
+# Required downloads (run once):
+#   hf auth login                                          # if not already authenticated
+#   hf download AEON-7/Qwen3.6-27B-AEON-Ultimate-Uncensored-Multimodal-NVFP4-MTP-XS
+#   hf download z-lab/Qwen3.6-27B-DFlash
+#   # Note: z-lab/Qwen3.6-27B-DFlash is auto-gated. First download will redirect
+#   # you to accept the terms-of-use page (one click, instant approval).
+#
+# Start:
+#   docker compose -f docker-compose.spark-xs.yml up -d
+#   docker compose -f docker-compose.spark-xs.yml logs -f vllm
+#
+# First boot takes ~10–12 min (FlashInfer NVFP4 GEMM autotuner + CUDA-graph capture, all
+# cached after first run). Subsequent restarts ~3–5 min.
+#
+# Test:
+#   curl http://localhost:8000/v1/chat/completions \
+#     -H "Content-Type: application/json" \
+#     -d '{"model":"aeon-ultimate","messages":[{"role":"user","content":"Hello"}]}'
+
+services:
+  vllm:
+    image: ghcr.io/aeon-7/vllm-aeon-ultimate-dflash:qwen36-v4
+    container_name: aeon-ultimate-xs
+    restart: unless-stopped
+    network_mode: host
+    ipc: host
+    ulimits:
+      memlock: -1
+
+    environment:
+      # ─── Core vLLM ───
+      - VLLM_ALLOW_LONG_MAX_MODEL_LEN=1
+      - VLLM_HTTP_TIMEOUT_KEEP_ALIVE=60
+
+      # ─── GB10 / sm_121a runtime ───
+      - TORCH_CUDA_ARCH_LIST=12.1a
+      - PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+      - TORCH_MATMUL_PRECISION=high
+      - NVIDIA_FORWARD_COMPAT=1
+      - NVIDIA_DISABLE_REQUIRE=1
+
+      # Required by PR #40191 for sm_121a-only builds — without this,
+      # vllm._C_stable_libtorch.abi3.so fails to import.
+      - ENABLE_NVFP4_SM100=0
+
+      # ─── FP4 path selection ───
+      - VLLM_USE_FLASHINFER_MOE_FP4=0
+      - VLLM_TEST_FORCE_FP8_MARLIN=0
+      - VLLM_USE_FLASHINFER_SAMPLER=1
+      # XS-specific: explicitly select the patched CUTLASS NVFP4 GEMM backend.
+      - VLLM_NVFP4_GEMM_BACKEND=flashinfer-cutlass
+
+    volumes:
+      # XS multimodal body (modelopt format, ~21 GB) — replaces the regular NVFP4 body
+      #- /home/wantez/.cache/huggingface/hub/models--AEON-7--Qwen3.6-27B-AEON-Ultimate-Uncensored-Multimodal-NVFP4-MTP-XS:/models/xs
+      # DFlash drafter (~3.46 GB)
+     # - /home/wantez/.cache/huggingface/hub/models--z-lab--Qwen3.6-27B-DFlash:/models/dflash-drafter
+      - /home/wantez/models/dflash-drafter:/models/dflash-drafter
+      - /home/wantez/.cache/huggingface:/root/.cache/huggingface
+      - /home/wantez/.triton/cache:/root/.triton/cache
+      - /home/wantez/.cache/vllm:/root/.cache/vllm
+    command:
+      - bash
+      - -c
+      - |
+        exec vllm serve AEON-7/Qwen3.6-27B-AEON-Ultimate-Uncensored-Multimodal-NVFP4-MTP-XS \
+          --served-model-name Qwen3.6-27B-AEON-NVFP4-XS aeon-ultimate qwen36-ultimate aeon-fast aeon-deep aeon-ultimate-xs \
+          --host 0.0.0.0 --port 8000 \
+          --tensor-parallel-size 1 \
+          --dtype auto \
+          --quantization modelopt \
+          --kv-cache-dtype auto \
+          --max-model-len 256000 \
+          --max-num-seqs 64 \
+          --max-num-batched-tokens 32768 \
+          --gpu-memory-utilization 0.85 \
+          --enable-chunked-prefill \
+          --no-enable-prefix-caching \
+          --generation-config vllm \
+          --load-format safetensors \
+          --trust-remote-code \
+          --enable-auto-tool-choice \
+          --tool-call-parser qwen3_coder \
+          --reasoning-parser qwen3 \
+          --attention-backend flash_attn \
+          --language-model-only \
+          --speculative-config '{"method":"dflash","model":"/models/dflash-drafter","num_speculative_tokens":15}'
+        # Notes on configuration choices:
+        #   - --quantization modelopt — required for the XS body. The XS body ships in
+        #     modelopt format (NVFP4 element + FP8 per-block + FP32 per-tensor scales).
+        #     The previous regular NVFP4 body was compressed-tensors format; modelopt is
+        #     the format vLLM serves through this code path.
+        #   - --speculative-config '{"method":"dflash",...}' — DFlash with the external
+        #     z-lab drafter. The XS body has a grafted MTP head in its safetensors but
+        #     it is *not* used here. Don't switch this to method:"qwen3_5_mtp" unless
+        #     you are deliberately running an ablation.
+        #   - --gpu-memory-utilization 0.75 is the default gateway cap when ASR, TTS,
+        #     embedding, or other GPU services share the Spark. If this is the only
+        #     major GPU workload, 0.85 is the long-context production cap; 0.88+ can
+        #     thrash unified memory. (RTX PRO 6000 has more headroom — it caps at 0.94.)
+        #   - --max-num-batched-tokens 32768 is the ceiling. vLLM's inductor compile-range
+        #     endpoint is [32768], so above 32k prefill falls back to eager mode.
+
+    # GPU exposure — required on hosts where Docker's default-runtime is not 'nvidia'.
+    # The DGX Spark base image ships with `default-runtime: nvidia` so this block is a
+    # no-op there, but on most other Linux hosts (default-runtime: runc) the container
+    # cannot see the GPU without it. Reported in issue #5; canonical Docker Compose v3
+    # spec for GPU reservation.
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

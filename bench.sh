@@ -1,5 +1,5 @@
-MODEL_TAG="Intel/Qwen3.5-122B-A10B-int4-AutoRound"
-MODEL_RECIPE="qwen3.5-122b-a10b-int4-autoround-mtp-vllm"
+MODEL_TAG="Qwen3.6-27B-AEON-NVFP4-XS"
+MODEL_RECIPE="qwen3.6-27b-nvfp4-dflash-docker"
 # Ports:
 #   vllm 8000
 #   litellm 4000
