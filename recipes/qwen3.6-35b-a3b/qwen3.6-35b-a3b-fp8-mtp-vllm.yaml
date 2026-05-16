@@ -18,11 +18,11 @@ defaults:
   max_model_len: 262144
   max_num_batched_tokens: 32768
   load_format: instanttensor
-  kv_cache_dtype: fp8
+  kv_cache_dtype: fp8_e4m3
   attention_backend: flashinfer
   tool_call_parser: qwen3_xml
   reasoning_parser: qwen3
-  speculative_config: '{"method": "mtp", "num_speculative_tokens": 2}'
+  speculative_config: '{"method": "mtp", "num_speculative_tokens": 3}'
 
 env:
   VLLM_MARLIN_USE_ATOMIC_ADD: "1"
@@ -37,6 +37,8 @@ command: |
     --chat-template fixed_chat_template.jinja \
     --gpu-memory-utilization {gpu_memory_utilization} \
     --enable-auto-tool-choice \
+    --enable-prefix-caching \
+    --enable-chunked-prefill \
     --tool-call-parser {tool_call_parser} \
     --reasoning-parser {reasoning_parser} \
     --kv-cache-dtype {kv_cache_dtype} \

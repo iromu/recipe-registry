@@ -1,5 +1,5 @@
 MODEL_TAG="Qwen/Qwen3.6-35B-A3B-FP8"
-MODEL_RECIPE="qwen3.6-35b-a3b-fp8-dflash"
+MODEL_RECIPE="qwen3.6-35b-a3b-fp8-mtp-vllm"
 # Ports:
 #   vllm 8000
 #   litellm 4000
