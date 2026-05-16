@@ -1,5 +1,5 @@
-MODEL_TAG="Qwen3.6-27B-AEON-NVFP4-XS"
-MODEL_RECIPE="qwen3.6-27b-nvfp4-dflash-docker"
+MODEL_TAG="Qwen/Qwen3.6-35B-A3B-FP8"
+MODEL_RECIPE="qwen3.6-35b-a3b-fp8-dflash"
 # Ports:
 #   vllm 8000
 #   litellm 4000
