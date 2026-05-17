@@ -18,7 +18,7 @@ defaults:
   max_model_len: 262144
   max_num_batched_tokens: 32768
   load_format: instanttensor
-  kv_cache_dtype: fp8
+  kv_cache_dtype: fp8_e4m3
   attention_backend: flashinfer
   tool_call_parser: qwen3_xml
   reasoning_parser: qwen3
@@ -42,6 +42,7 @@ command: |
     --load-format {load_format} \
     --attention-backend {attention_backend} \
     --enable-prefix-caching \
+    --enable-chunked-prefill \
     -tp {tensor_parallel} \
     -pp {pipeline_parallel} \
     --default-chat-template-kwargs '{"preserve_thinking":true}' \
