@@ -1,5 +1,5 @@
-MODEL_TAG="Qwen/Qwen3.6-27B-FP8"
-MODEL_RECIPE="qwen3.6-27b-fp8-mtp-vllm"
+MODEL_TAG="Qwen3.6-27B-Text-NVFP4-MTP"
+MODEL_RECIPE="qwen3.6-27b-nvfp4-mtp-vllm"
 # Ports:s
 #   vllm 8000
 #   litellm 4000
