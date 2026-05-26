@@ -19,6 +19,11 @@ defaults:
   gpu_memory_utilization: 0.7
   max_model_len: 262144
   max_num_batched_tokens: 16384
+  load_format: fastsafetensors
+  attention_backend: flash_attn
+  tool_call_parser: qwen3_xml
+  reasoning_parser: qwen3
+  speculative_config: '{"method": "dflash", "model": "z-lab/Qwen3.6-35B-A3B-DFlash", "num_speculative_tokens": 15}'
 
 # Environment variables
 env:
@@ -34,12 +39,12 @@ command: |
     --max-num-batched-tokens {max_num_batched_tokens} \
     --gpu-memory-utilization {gpu_memory_utilization} \
     --enable-auto-tool-choice \
-    --tool-call-parser qwen3_xml \
-    --reasoning-parser qwen3 \
-    --load-format fastsafetensors \
-    --attention-backend flash_attn \
+    --tool-call-parser {tool_call_parser} \
+    --reasoning-parser {reasoning_parser} \
+    --load-format {load_format} \
+    --attention-backend {attention_backend} \
     --chat-template fixed_chat_template.jinja \
-    --speculative-config '{"method": "dflash", "model": "z-lab/Qwen3.6-35B-A3B-DFlash", "num_speculative_tokens": 15}' \
+    --speculative-config '{speculative_config}' \
     -tp {tensor_parallel}  \
     --default-chat-template-kwargs '{"preserve_thinking":true}' \
     --generation-config vllm \
