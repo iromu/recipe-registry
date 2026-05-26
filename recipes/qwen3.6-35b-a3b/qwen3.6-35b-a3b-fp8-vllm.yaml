@@ -36,6 +36,7 @@ command: |
     --chat-template fixed_chat_template.jinja \
     --gpu-memory-utilization {gpu_memory_utilization} \
     --enable-auto-tool-choice \
+    --language-model-only \
     --tool-call-parser {tool_call_parser} \
     --reasoning-parser {reasoning_parser} \
     --kv-cache-dtype {kv_cache_dtype} \

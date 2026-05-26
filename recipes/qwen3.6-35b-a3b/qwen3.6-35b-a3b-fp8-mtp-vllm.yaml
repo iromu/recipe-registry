@@ -39,6 +39,7 @@ command: |
     --enable-auto-tool-choice \
     --enable-prefix-caching \
     --enable-chunked-prefill \
+    --language-model-only \
     --tool-call-parser {tool_call_parser} \
     --reasoning-parser {reasoning_parser} \
     --kv-cache-dtype {kv_cache_dtype} \
