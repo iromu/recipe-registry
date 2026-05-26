@@ -7,27 +7,29 @@ metadata:
   description: Qwen3.6-27B-FP8 — native FP8 format
 
 mods:
-  - mods/fix-qwen3-coder-next
-  - mods/fix-qwen3.5-chat-template
+  - mods/fix-qwen3.6-chat-template
 
 defaults:
   port: 8000
   host: 0.0.0.0
   tensor_parallel: 1
   pipeline_parallel: 1
-  gpu_memory_utilization: 0.8
+  gpu_memory_utilization: 0.92
   max_model_len: 262144
   max_num_batched_tokens: 32768
   load_format: fastsafetensors  # instanttensor may crash dflash drafter loading
   kv_cache_dtype: auto  # flash_attn cannot do fp8 kv cache
   attention_backend: flash_attn
-  tool_call_parser: qwen3_coder
+  tool_call_parser: qwen3_xml
   reasoning_parser: qwen3
   speculative_config: '{"method": "dflash", "model": "z-lab/Qwen3.6-27B-DFlash", "num_speculative_tokens": 15}'
 
 env:
   VLLM_MARLIN_USE_ATOMIC_ADD: "1"
-  VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS: "0"  # memory calc may cause crashes
+  VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS: "1"  # memory calc may cause crashes
+  NVIDIA_FORWARD_COMPAT: 1
+  PYTORCH_CUDA_ALLOC_CONF: "expandable_segments:True"
+  TORCH_MATMUL_PRECISION: high
 
 command: |
   vllm serve {model} \
@@ -36,8 +38,7 @@ command: |
     --max-model-len {max_model_len} \
     --max-num-batched-tokens {max_num_batched_tokens} \
     --trust-remote-code \
-    --language-model-only \
-    --chat-template unsloth.jinja \
+    --chat-template fixed_chat_template.jinja \
     --gpu-memory-utilization {gpu_memory_utilization} \
     --enable-auto-tool-choice \
     --tool-call-parser {tool_call_parser} \
@@ -51,5 +52,8 @@ command: |
     -pp {pipeline_parallel} \
     --default-chat-template-kwargs '{"preserve_thinking":true}' \
     --generation-config vllm \
-    --override-generation-config '{"temperature": 0.6, "top_p": 0.95, "top_k": 20, "min_p": 0.0, "presence_penalty": 0.0, "repetition_penalty": 1.0}'
-
+    --override-generation-config '{"temperature": 0.6, "top_p": 0.95, "top_k": 20, "min_p": 0.0, "presence_penalty": 0.0, "repetition_penalty": 1.0}' \ 
+    --max-num-seqs 10 \   
+    --language-model-only \
+    --max-cudagraph-capture-size 160 \
+    --enable-chunked-prefill
