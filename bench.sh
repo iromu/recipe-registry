@@ -1,4 +1,4 @@
-MODEL_TAG="Qwen3.6-27B-Text-NVFP4-MTP"
+MODEL_TAG="sakamakismile/Qwen3.6-27B-Text-NVFP4-MTP"
 MODEL_RECIPE="qwen3.6-27b-nvfp4-mtp-vllm"
 # Ports:s
 #   vllm 8000
