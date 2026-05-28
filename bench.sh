@@ -1,5 +1,5 @@
-MODEL_TAG="Intel/Qwen3.6-27B-int4-AutoRound"
-MODEL_RECIPE="qwen3.6-27b-int4-autorun-mtp-vllm"
+MODEL_TAG="Qwen/Qwen3.6-35B-A3B-FP8"
+MODEL_RECIPE="qwen3.6-35b-a3b-fp8-mtp-vllm"
 # Ports:s
 #   vllm 8000
 #   litellm 4000

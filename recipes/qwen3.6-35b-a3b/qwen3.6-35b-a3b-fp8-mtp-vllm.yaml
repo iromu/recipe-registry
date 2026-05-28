@@ -18,9 +18,9 @@ defaults:
   max_model_len: 262144
   max_num_batched_tokens: 32768
   load_format: instanttensor
-  kv_cache_dtype: fp8_e4m3
+  kv_cache_dtype: fp8
   attention_backend: flashinfer
-  tool_call_parser: qwen3_xml
+  tool_call_parser: qwen3_coder
   reasoning_parser: qwen3
   speculative_config: '{"method": "mtp", "num_speculative_tokens": 3}'
 
@@ -29,6 +29,7 @@ env:
 
 command: |
   vllm serve {model} \
+    --served-model-name Qwen3.6-35B-A3B Qwen3.6-35B-A3B-FP8 Qwen/Qwen3.6-35B-A3B-FP8 \
     --host {host} \
     --port {port} \
     --max-model-len {max_model_len} \
@@ -46,7 +47,6 @@ command: |
     --load-format {load_format} \
     --attention-backend {attention_backend} \
     --speculative-config '{speculative_config}' \
-    --enable-prefix-caching \
     -tp {tensor_parallel} \
     -pp {pipeline_parallel} \
     --default-chat-template-kwargs '{"preserve_thinking":true}' \
