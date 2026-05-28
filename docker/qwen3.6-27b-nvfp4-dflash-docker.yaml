@@ -90,7 +90,7 @@ services:
           --dtype auto \
           --quantization modelopt \
           --kv-cache-dtype auto \
-          --max-model-len 256000 \
+          --max-model-len 262144 \
           --max-num-seqs 64 \
           --max-num-batched-tokens 32768 \
           --gpu-memory-utilization 0.85 \

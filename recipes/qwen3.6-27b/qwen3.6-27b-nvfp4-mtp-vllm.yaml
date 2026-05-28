@@ -14,10 +14,10 @@ defaults:
   host: 0.0.0.0
   tensor_parallel: 1
   pipeline_parallel: 1
-  gpu_memory_utilization: 0.8
-  max_model_len: 131072
-  max_num_batched_tokens: 32768
-  max_num_seqs: 32
+  gpu_memory_utilization: 0.84
+  max_model_len: 196608
+  max_num_batched_tokens: 16384
+  max_num_seqs: 16
   load_format: instanttensor
   kv_cache_dtype: fp8
   attention_backend: flashinfer
