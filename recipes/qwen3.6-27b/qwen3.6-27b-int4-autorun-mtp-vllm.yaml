@@ -15,7 +15,7 @@ defaults:
   host: 0.0.0.0
   tensor_parallel: 1
   max_model_len: 196608
-  gpu_memory_utilization: 0.84
+  gpu_memory_utilization: 0.8
   max_num_batched_tokens: 16384
   max-num-seqs: 16
   load_format: instanttensor
@@ -44,7 +44,7 @@ command: |
     --max-num-batched-tokens {max_num_batched_tokens} \
     --max-num-seqs {max-num-seqs}  \
     --dtype bfloat16 \
-    --kv-cache-dtype fp8_e4m3 \
+    --kv-cache-dtype fp8 \
     --trust-remote-code \
     --attention-backend flashinfer \
     --chat-template unsloth.jinja \
