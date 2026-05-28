@@ -1,55 +1,54 @@
 recipe_version: "2"
-model: Lorbus/Qwen3.6-27B-int4-AutoRound
+model: Intel/Qwen3.6-27B-int4-AutoRound
 runtime: vllm
 container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly:latest
 
 metadata:
-  description: Qwen3.6-27B-int4-AutoRound
+  description: Intel/Qwen3.6-27B-int4-AutoRound
 
 mods:
-  - mods/fix-qwen3.6-chat-template
+  - mods/fix-qwen3.5-autoround
+  - mods/fix-qwen3.5-chat-template
 
 defaults:
   port: 8000
   host: 0.0.0.0
   tensor_parallel: 1
-  pipeline_parallel: 1
-  gpu_memory_utilization: 0.8
-  max_model_len: 262144
-  max_num_batched_tokens: 32768
+  max_model_len: 196608
+  gpu_memory_utilization: 0.84
+  max_num_batched_tokens: 16384
+  max-num-seqs: 16
   load_format: instanttensor
-  kv_cache_dtype: turboquant_4bit_nc
-  attention_backend: flashinfer
-  tool_call_parser: qwen3_xml
+  tool_call_parser: qwen3_coder
   reasoning_parser: qwen3
-  speculative_config: '{"method":"mtp","num_speculative_tokens":1}'
+  speculative_config: '{"method": "mtp", "num_speculative_tokens": 3}'
+  coding_config: '{"temperature": 0.7,  "top_p": 0.8, "top_k": 20, "presence_penalty": 0.0, "repetition_penalty": 1.0}'
 
 env:
   VLLM_MARLIN_USE_ATOMIC_ADD: "1"
 
 command: |
   vllm serve {model} \
+    --served-model-name Qwen3.6-27B Qwen3.6-27B-int4-AutoRound Intel/Qwen3.6-27B-int4-AutoRound \
+    --max-model-len {max_model_len} \
+    --gpu-memory-utilization {gpu_memory_utilization} \
     --host {host} \
     --port {port} \
-    --max-model-len {max_model_len} \
-    --max-num-batched-tokens {max_num_batched_tokens} \
-    --trust-remote-code \
-    --chat-template fixed_chat_template.jinja \
-    --gpu-memory-utilization {gpu_memory_utilization} \
+    --load-format {load_format} \
+    --enable-prefix-caching \
+    --enable-chunked-prefill \
+    --speculative-config '{speculative_config}' \
     --enable-auto-tool-choice \
     --tool-call-parser {tool_call_parser} \
     --reasoning-parser {reasoning_parser} \
-    --kv-cache-dtype {kv_cache_dtype} \
-    --max-num-seqs 3 \
-    --load-format {load_format} \
-    --enable-prefix-caching \
-    --speculative-config '{speculative_config}' \
-    --compilation-config.cudagraph_mode none \
-    -tp {tensor_parallel} \
-    -pp {pipeline_parallel} \
+    --max-num-batched-tokens {max_num_batched_tokens} \
+    --max-num-seqs {max-num-seqs}  \
+    --dtype bfloat16 \
+    --kv-cache-dtype fp8_e4m3 \
+    --trust-remote-code \
+    --attention-backend flashinfer \
+    --chat-template unsloth.jinja \
     --language-model-only \
-    --default-chat-template-kwargs '{"preserve_thinking":true}' \
-    --generation-config vllm \
-    --override-generation-config '{"temperature": 0.6, "top_p": 0.95, "top_k": 20, "min_p": 0.0, "presence_penalty": 0.0, "repetition_penalty": 1.0}'
-
-
+    -tp {tensor_parallel} \
+    --generation-config auto \
+    --override-generation-config '{coding_config}'

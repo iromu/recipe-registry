@@ -1,5 +1,5 @@
-MODEL_TAG="sakamakismile/Qwen3.6-27B-Text-NVFP4-MTP"
-MODEL_RECIPE="qwen3.6-27b-nvfp4-mtp-vllm"
+MODEL_TAG="Intel/Qwen3.6-27B-int4-AutoRound"
+MODEL_RECIPE="qwen3.6-27b-int4-autorun-mtp-vllm"
 # Ports:s
 #   vllm 8000
 #   litellm 4000
