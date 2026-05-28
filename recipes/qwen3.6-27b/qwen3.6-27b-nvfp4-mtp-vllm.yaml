@@ -14,10 +14,10 @@ defaults:
   host: 0.0.0.0
   tensor_parallel: 1
   pipeline_parallel: 1
-  gpu_memory_utilization: 0.9
+  gpu_memory_utilization: 0.8
   max_model_len: 131072
-  max_num_batched_tokens: 16384
-  max_num_seqs: 16
+  max_num_batched_tokens: 32768
+  max_num_seqs: 32
   load_format: instanttensor
   kv_cache_dtype: fp8
   attention_backend: flashinfer
@@ -27,6 +27,9 @@ defaults:
 
 env:
   VLLM_MARLIN_USE_ATOMIC_ADD: "1"
+  VLLM_ATTENTION_BACKEND: "FLASHINFER"
+  VLLM_FLASHINFER_FORCE_TENSOR_CORES: "1"
+  VLLM_NVFP4_GEMM_BACKEND: "flashinfer-cutlass"
 
 command: |
   vllm serve {model} \
@@ -49,6 +52,7 @@ command: |
     --attention-backend {attention_backend} \
     --speculative-config '{speculative_config}' \
     --enable-prefix-caching \
+    --enable-chunked-prefill \
     -tp {tensor_parallel} \
     -pp {pipeline_parallel} \
     --default-chat-template-kwargs '{"preserve_thinking":true}' \

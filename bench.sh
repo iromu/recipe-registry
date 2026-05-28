@@ -7,8 +7,14 @@ MODEL_PORT=8000
 
 # --backend: vllm, litellm, llamacpp
 uvx tool-eval-bench \
-  --perf \
   --spec-bench --spec-method mtp --spec-prompts "code,structured" \
+  --model ${MODEL_TAG} --backend vllm  \
+  --base-url http://spark.local:${MODEL_PORT} && \
+  latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
+  cp -f $latest_file "benchmarks/spec_${MODEL_RECIPE}.md"
+
+uvx tool-eval-bench \
+  --perf \
   --model ${MODEL_TAG} --backend vllm  \
   --base-url http://spark.local:${MODEL_PORT} && \
   latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
