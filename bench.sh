@@ -1,16 +1,16 @@
-MODEL_TAG="nvidia/NVIDIA-Nemotron-3-Nano-4B-FP8"
-MODEL_RECIPE="nvidia-nemotron-3-nano-4b-fp8-vllm"
+MODEL_TAG="LiquidAI/LFM2.5-350M"
+MODEL_RECIPE="lfm2.5-350m-bf16-vllm"
 
 # vLLM (:8000), llama.cpp (:8080), SGLang (:30000), LiteLLM (:4000), Ollama (:11434), or TGI (:5000)
 MODEL_PORT=8001
 
 # --backend: vllm, litellm, llamacpp
-uvx tool-eval-bench \
-  --spec-bench --spec-method auto --spec-prompts "code,structured" \
-  --model ${MODEL_TAG} --backend vllm  \
-  --base-url http://spark.local:${MODEL_PORT} && \
-  latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
-  cp -f $latest_file "benchmarks/spec_${MODEL_RECIPE}.md"
+#uvx tool-eval-bench \
+#  --spec-bench --spec-method auto --spec-prompts "code,structured" \
+#  --model ${MODEL_TAG} --backend vllm  \
+#  --base-url http://spark.local:${MODEL_PORT} && \
+#  latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
+#  cp -f $latest_file "benchmarks/spec_${MODEL_RECIPE}.md"
 
 uvx tool-eval-bench \
   --perf \
