@@ -1,16 +1,16 @@
-MODEL_TAG="LiquidAI/LFM2.5-350M"
-MODEL_RECIPE="lfm2.5-350m-bf16-vllm"
+MODEL_TAG="RedHatAI/Qwen3.6-35B-A3B-NVFP4"
+MODEL_RECIPE="qwen3.6-35b-a3b-nvfp4-atlas"
 
 # vLLM (:8000), llama.cpp (:8080), SGLang (:30000), LiteLLM (:4000), Ollama (:11434), or TGI (:5000)
-MODEL_PORT=8001
+MODEL_PORT=8888
 
 # --backend: vllm, litellm, llamacpp
-#uvx tool-eval-bench \
-#  --spec-bench --spec-method auto --spec-prompts "code,structured" \
-#  --model ${MODEL_TAG} --backend vllm  \
-#  --base-url http://spark.local:${MODEL_PORT} && \
-#  latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
-#  cp -f $latest_file "benchmarks/spec_${MODEL_RECIPE}.md"
+uvx tool-eval-bench \
+  --spec-bench --spec-method auto --spec-prompts "code,structured" \
+  --model ${MODEL_TAG} --backend vllm  \
+  --base-url http://spark.local:${MODEL_PORT} && \
+  latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
+  cp -f $latest_file "benchmarks/spec_${MODEL_RECIPE}.md"
 
 uvx tool-eval-bench \
   --perf \

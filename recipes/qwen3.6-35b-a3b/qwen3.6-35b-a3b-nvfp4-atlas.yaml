@@ -1,0 +1,28 @@
+runtime: atlas
+recipe_version: '2'
+max_nodes: 1
+defaults:
+  gpu_memory_utilization: 0.88
+  scheduling_policy: slai
+  max_model_len: 131072
+  speculative: true
+  host: 0.0.0.0
+  port: 8888
+  enable_prefix_caching: true
+  mtp_quantization: nvfp4
+  kv_cache_dtype: nvfp4
+container: avarok/atlas-gb10@sha256:53f5c6df78a525d64e4b8757a97a973279fda74eb080483c0cc1bb0d05545536
+env: {}
+metadata:
+  kv_dtype: nvfp4
+  maintainer: avarok
+  model_params: 35B
+  category: agent
+  description: |
+    Qwen3.6-35B-A3B (RedHatAI NVFP4) with MTP K=2 on the Atlas runtime.
+    Mirrors the qwen3.5-35b-a3b-nvfp4 recipe but uses the qwen3_5_moe
+    architecture from Qwen3.6, served on a single GB10. NVFP4 weights +
+    NVFP4 KV cache + NVFP4 MTP-quantized draft head.
+  quantization: nvfp4
+  model_dtype: nvfp4
+model: RedHatAI/Qwen3.6-35B-A3B-NVFP4
