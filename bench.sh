@@ -1,13 +1,12 @@
-MODEL_TAG="Qwen/Qwen3.6-35B-A3B-FP8"
-MODEL_RECIPE="qwen3.6-35b-a3b-fp8-mtp-vllm"
-# Ports:s
-#   vllm 8000
-#   litellm 4000
-MODEL_PORT=8000
+MODEL_TAG="nvidia/NVIDIA-Nemotron-3-Nano-4B-FP8"
+MODEL_RECIPE="nvidia-nemotron-3-nano-4b-fp8-vllm"
+
+# vLLM (:8000), llama.cpp (:8080), SGLang (:30000), LiteLLM (:4000), Ollama (:11434), or TGI (:5000)
+MODEL_PORT=8001
 
 # --backend: vllm, litellm, llamacpp
 uvx tool-eval-bench \
-  --spec-bench --spec-method mtp --spec-prompts "code,structured" \
+  --spec-bench --spec-method auto --spec-prompts "code,structured" \
   --model ${MODEL_TAG} --backend vllm  \
   --base-url http://spark.local:${MODEL_PORT} && \
   latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
