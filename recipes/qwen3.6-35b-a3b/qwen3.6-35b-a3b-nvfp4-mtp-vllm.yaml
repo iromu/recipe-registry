@@ -5,8 +5,16 @@ container: vllm-node
 
 metadata:
   description: |
-    vllm-node built on 2026-06-02
+    vllm-node built on 2026-06-06
     
+      ✓       code @ d0  50.9 eff t/s  50.6 stream t/s  α=91.2%  waste=9%  τ=2.7  win=3
+      ✓ structured @ d0  56.4 eff t/s  56.0 stream t/s  α=72.4%  waste=28%  τ=2.2  win=3
+      ✓       code @ d4096  127.3 eff t/s  126.4 stream t/s  α=89.5%  waste=10%  τ=2.7  win=3
+      ✓ structured @ d4096  109.8 eff t/s  109.0 stream t/s  α=74.2%  waste=26%  τ=2.2  win=3
+      ✓       code @ d8192  124.3 eff t/s  123.5 stream t/s  α=85.2%  waste=15%  τ=2.6  win=3
+      ✓ structured @ d8192  109.5 eff t/s  108.7 stream t/s  α=72.5%  waste=28%  τ=2.2  win=3
+      
+  
     https://huggingface.co/nvidia/Qwen3.6-35B-A3B-NVFP4
     
     export VLLM_USE_FLASHINFER_MOE_FP4=0
@@ -26,7 +34,7 @@ defaults:
   host: 0.0.0.0
   tensor_parallel: 1
   pipeline_parallel: 1
-  gpu_memory_utilization: 0.65
+  gpu_memory_utilization: 0.51 # 4x multiplier
   max_model_len: 262144
   max_num_batched_tokens: 8192
   load_format: instanttensor
