@@ -1,0 +1,34 @@
+recipe_version: "2"
+model: cyankiwi/Mellum2-12B-A2.5B-Thinking-AWQ-INT4
+runtime: vllm
+min_nodes: 1
+container: vllm-node
+
+metadata:
+  description: Mellum2-12B-A2.5B-Thinking-AWQ-INT4
+
+defaults:
+  port: 8001
+  host: 0.0.0.0
+  tensor_parallel: 1
+  pipeline_parallel: 1
+  gpu_memory_utilization: 0.19
+  max_model_len: 131072
+  kv_cache_dtype: fp8
+  tool_call_parser: hermes
+  reasoning_parser: qwen3
+
+command: |
+  vllm serve {model} \
+    --host {host} \
+    --port {port} \
+    --served-model-name Mellum2-12B-A2.5B Mellum2-12B-A2.5B-Thinking-AWQ-INT4 cyankiwi/Mellum2-12B-A2.5B-Thinking-AWQ-INT4 \
+    --max-model-len {max_model_len} \
+    --gpu-memory-utilization {gpu_memory_utilization} \
+    --kv-cache-dtype {kv_cache_dtype} \
+    --enable-prefix-caching \
+    --enable-auto-tool-choice \
+    --tool-call-parser {tool_call_parser} \
+    --reasoning-parser {reasoning_parser} \
+    -tp {tensor_parallel} \
+    -pp {pipeline_parallel} 
