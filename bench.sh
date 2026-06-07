@@ -1,16 +1,16 @@
-MODEL_TAG="cyankiwi/Mellum2-12B-A2.5B-Thinking-AWQ-INT4"
-MODEL_RECIPE="mellum2-12b-a2.5b-awq4-vllm"
+MODEL_TAG="nvidia/Qwen3.5-122B-A10B-NVFP4"
+MODEL_RECIPE="qwen3.5-122b-a10b-nvfp4-mtp-vllm"
 
 # vLLM (:8000), llama.cpp (:8080), SGLang (:30000), LiteLLM (:4000), Ollama (:11434), or TGI (:5000)
-MODEL_PORT=8001
+MODEL_PORT=8000
 
 # --backend: vllm, litellm, llamacpp
-#uvx tool-eval-bench \
-#  --spec-bench --spec-method auto --spec-prompts "code,structured" \
-#  --model ${MODEL_TAG} --backend vllm  \
-#  --base-url http://spark.local:${MODEL_PORT} && \
-#  latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
-#  cp -f $latest_file "benchmarks/spec_${MODEL_RECIPE}.md"
+uvx tool-eval-bench \
+  --spec-bench --spec-method auto --spec-prompts "code,structured" \
+  --model ${MODEL_TAG} --backend vllm  \
+  --base-url http://spark.local:${MODEL_PORT} && \
+  latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
+  cp -f $latest_file "benchmarks/spec_${MODEL_RECIPE}.md"
 
 uvx tool-eval-bench \
   --perf \
