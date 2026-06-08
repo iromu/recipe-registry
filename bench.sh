@@ -1,5 +1,5 @@
-MODEL_TAG="nvidia/Qwen3.5-122B-A10B-NVFP4"
-MODEL_RECIPE="qwen3.5-122b-a10b-nvfp4-mtp-vllm"
+MODEL_TAG="nvidia/Qwen3.6-35B-A3B-NVFP4"
+MODEL_RECIPE="qwen3.6-35b-a3b-nvfp4-mtp-vllm"
 
 # vLLM (:8000), llama.cpp (:8080), SGLang (:30000), LiteLLM (:4000), Ollama (:11434), or TGI (:5000)
 MODEL_PORT=8000
