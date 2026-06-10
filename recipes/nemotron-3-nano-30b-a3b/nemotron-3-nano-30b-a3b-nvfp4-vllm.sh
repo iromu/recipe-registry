@@ -1,0 +1,1 @@
+uvx sparkrun run nemotron-3-nano-30b-a3b-nvfp4-vllm

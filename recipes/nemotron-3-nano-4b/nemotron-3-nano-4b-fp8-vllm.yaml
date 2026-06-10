@@ -16,8 +16,8 @@ defaults:
   host: 0.0.0.0
   tensor_parallel: 1
   pipeline_parallel: 1
-  gpu_memory_utilization: 0.2
-  max_model_len: 16384
+  gpu_memory_utilization: 0.4 # 2.1x (vs max_model_len=262144)k
+  max_model_len: 262144
   max_num_batched_tokens: 8192
   tool_call_parser: qwen3_coder
   reasoning_parser: nano_v3

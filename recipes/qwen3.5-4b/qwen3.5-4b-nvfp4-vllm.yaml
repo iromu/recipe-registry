@@ -1,10 +1,10 @@
 recipe_version: "2"
-model: Qwen/Qwen3.5-0.8B
+model: sakamakismile/Huihui-Qwen3.5-4B-abliterated-NVFP4
 runtime: vllm
 container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly:latest
 
 metadata:
-  description: Qwen/Qwen3.5-0.8B — native format
+  description: sakamakismile/Huihui-Qwen3.5-4B-abliterated-NVFP4
 
 mods:
   - mods/fix-qwen3-coder-next
@@ -15,12 +15,12 @@ defaults:
   host: 0.0.0.0
   tensor_parallel: 1
   pipeline_parallel: 1
-  gpu_memory_utilization: 0.4
+  gpu_memory_utilization: 0.4 # 2.4
   max_model_len: 262144
   max_num_batched_tokens: 32768
   load_format: fastsafetensors
-  kv_cache_dtype: auto
-  attention_backend: flash_attn
+  kv_cache_dtype: fp8
+  attention_backend: flashinfer
   tool_call_parser: qwen3_coder
   reasoning_parser: qwen3
 
@@ -29,6 +29,7 @@ env:
 
 command: |
   vllm serve {model} \
+    --served-model-name Qwen3.5-4B sakamakismile/Huihui-Qwen3.5-4B-abliterated-NVFP4 \
     --host {host} \
     --port {port} \
     --language-model-only \
