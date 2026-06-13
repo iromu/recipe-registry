@@ -2,6 +2,7 @@ recipe_version: "2"
 model: nvidia/Qwen3.6-35B-A3B-NVFP4
 runtime: vllm
 container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly:latest
+#container: vllm-node
 
 metadata:
   description: |
