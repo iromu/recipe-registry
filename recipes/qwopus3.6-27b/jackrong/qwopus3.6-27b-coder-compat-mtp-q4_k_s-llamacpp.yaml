@@ -1,0 +1,37 @@
+model: Jackrong/Qwopus3.6-27B-Coder-Compat-MTP-GGUF:Q4_K_S
+runtime: llama-cpp
+max_nodes: 1
+container: scitrera/dgx-spark-llama-cpp:b9771-cu131
+
+metadata:
+  description: Jackrong/Qwopus3.6-27B-Coder-Compat-MTP-GGUF
+  model_params: 27B
+  model_dtype: q4_k_s
+  kv_cache_dtype: q8_0
+
+defaults:
+  port: 8000
+  host: 0.0.0.0
+  n_gpu_layers: 99
+  ctx_size: 262144
+  kv_cache_dtype: q8_0
+
+command: |
+  llama-server \
+      -hf {model} \
+      --host {host} \
+      --port {port} \
+      --cache-type-k {kv_cache_dtype} \
+      --cache-type-v {kv_cache_dtype} \
+      --n-gpu-layers {n_gpu_layers} \
+      --ctx-size {ctx_size} \
+      --flash-attn on \
+      --jinja \
+      --no-webui \
+      --temp 0.85 \
+      --top-p 0.95 \
+      --top-k 20 \
+      --min-p 0.05 \
+      --repeat-penalty 1.0 \
+      --spec-type draft-mtp --spec-draft-n-max 3 \
+      --chat-template-kwargs '{"preserve_thinking": true}'
