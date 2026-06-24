@@ -3,13 +3,10 @@
 recipe_version: "2"
 model: AEON-7/Qwen3.6-27B-AEON-Ultimate-Uncensored-Multimodal-NVFP4-MTP-XS
 runtime: vllm
-container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly:latest
+container: ghcr.io/aeon-7/aeon-vllm-ultimate:latest
 
 metadata:
   description: AEON-7/Qwen3.6-27B-AEON-Ultimate-Uncensored-Multimodal-NVFP4-MTP-XS
-
-mods:
-  - mods/fix-qwen3.6-chat-template
 
 defaults:
   port: 8000
@@ -17,46 +14,64 @@ defaults:
   tensor_parallel: 1
   pipeline_parallel: 1
   gpu_memory_utilization: 0.75
-  max_model_len: 200000
+  max_model_len: 131072
   max_num_batched_tokens: 32768
   load_format: safetensors  # instanttensor may crash dflash drafter loading
   kv_cache_dtype: auto  # flash_attn cannot do fp8 kv cache
   attention_backend: flash_attn
   tool_call_parser: qwen3_coder
   reasoning_parser: qwen3
-  speculative_config: '{"method": "dflash", "model": "z-lab/Qwen3.6-27B-DFlash", "num_speculative_tokens": 15}'
+  speculative_config: '{"method": "dflash", "model": "z-lab/Qwen3.6-27B-DFlash", "num_speculative_tokens": 12}'
 
 env:
-  VLLM_MARLIN_USE_ATOMIC_ADD: "1"
-  VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS: "0"  # memory calc may cause crashes
+  # ─── Core vLLM ───
+  VLLM_ALLOW_LONG_MAX_MODEL_LEN: 1
+
+  # ─── GB10 / sm_121a runtime ───
+  TORCH_CUDA_ARCH_LIST: 12.1a
+  PYTORCH_CUDA_ALLOC_CONF: expandable_segments:True
+  TORCH_MATMUL_PRECISION: high
+  NVIDIA_FORWARD_COMPAT: 1
+  NVIDIA_DISABLE_REQUIRE: 1
+
+  # Required by PR #40191 for sm_121a-only builds — without this,
+  # vllm._C_stable_libtorch.abi3.so fails to import.
+  ENABLE_NVFP4_SM100: 0
+
+  # ─── FP4 path selection ───
+  VLLM_USE_FLASHINFER_MOE_FP4: 0
+  VLLM_TEST_FORCE_FP8_MARLIN: 0
+  VLLM_USE_FLASHINFER_SAMPLER: 1
+  # XS-specific: explicitly select the patched CUTLASS NVFP4 GEMM backend.
+  VLLM_NVFP4_GEMM_BACKEND: flashinfer-cutlass
 
 command: |
   vllm serve {model} \
     --host {host} \
     --port {port} \
+    --tensor-parallel-size 1 \
+    --dtype auto \
+    --quantization modelopt \
+    --kv-cache-dtype {kv_cache_dtype} \
+    --mamba-cache-dtype float16 \
+    --mamba-block-size 256 \
     --max-model-len {max_model_len} \
+    --max-num-seqs 64 \
     --max-num-batched-tokens {max_num_batched_tokens} \
-    --max-num-seqs 16 \
-    --trust-remote-code \
-    --chat-template fixed_chat_template.jinja \
     --gpu-memory-utilization {gpu_memory_utilization} \
+    --enable-chunked-prefill \
+    --no-enable-prefix-caching \
+    --load-format safetensors \
+    --trust-remote-code \
     --enable-auto-tool-choice \
     --tool-call-parser {tool_call_parser} \
     --reasoning-parser {reasoning_parser} \
-    --quantization modelopt \
-    --kv-cache-dtype {kv_cache_dtype} \
-    --load-format {load_format} \
     --attention-backend {attention_backend} \
-    --speculative-config '{speculative_config}' \
-    --enable-prefix-caching \
-    --enable-chunked-prefill \
-    -tp {tensor_parallel} \
-    -pp {pipeline_parallel} \
-    --language-model-only \
-    --limit-mm-per-prompt '{"image":4,"video":2}' \
+    --limit-mm-per-prompt '{"image": 4, "video": 2}' \
     --mm-encoder-tp-mode data \
     --mm-processor-cache-type shm \
     --mm-shm-cache-max-object-size-mb 256 \
+    --speculative-config {speculative_config} \
     --default-chat-template-kwargs '{"preserve_thinking":true}' \
     --generation-config vllm \
     --override-generation-config '{"temperature": 0.6, "top_p": 0.95, "top_k": 20, "min_p": 0.0, "presence_penalty": 0.0, "repetition_penalty": 1.0}'

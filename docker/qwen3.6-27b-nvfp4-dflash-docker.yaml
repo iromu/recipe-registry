@@ -1,27 +1,41 @@
-# docker-compose.spark-xs.yml — DGX Spark winning config (v4, 2026-05-10)
+# docker-compose.spark-xs.yml — DGX Spark winning config (2026-06-11)
 #
 # Current recommendation:
-#   image ghcr.io/aeon-7/vllm-aeon-ultimate-dflash:qwen36-v4
-#   XS multimodal body + DFlash k=15 + FlashInfer 0.6.11 + patched CUTLASS NVFP4
+#   image ghcr.io/aeon-7/aeon-vllm-ultimate:latest
+#   XS multimodal body + DFlash n=12 + FlashInfer 0.6.11 + patched CUTLASS NVFP4
 #
-# Headline v4 benchmark signal on DGX Spark:
-#   average c=1 decode 37.56 tok/s vs 10.49 tok/s dirty stock eager baseline (3.58×)
-#   best c=1 decode 49.48 tok/s on extraction / JSON
-#   reasoning c=1 decode 42.41 tok/s
-#   c=16 extraction / JSON 219.11 tok/s aggregate with 43.2 ms TPOT
+# Headline benchmark signal on DGX Spark (aeon-vllm-ultimate:latest, DFlash n=12):
+#   Lead with ACCEPTANCE (stable across runs), not single-sample tok/s.
+#   Long-context (~9k-token) draft acceptance: NEW 45.0% vs pre-fix image 19.7% = 2.3×.
+#   Short-context c=1 acceptance by category (new, n=12, approximate):
+#     Math ~50%, Reasoning ~50%, Extraction ~40%, Coding ~38%, Natural ~25%, Prose ~18%.
+#   Short-context throughput is statistically UNCHANGED vs the prior image (the drafter's
+#   sliding-window attention only engages past 2048 tokens); the win is specifically
+#   long-context. Caveat: single / 3-round samples; short-context rankings are within noise.
+#
+# Why long-context drafting now holds up (the whole point of moving to :latest):
+#   The z-lab Qwen3.6-27B DFlash drafter is a sliding-window model — 4 of its 5 layers use
+#   sliding-window attention (window 2048). vLLM PR #40898 (in aeon-vllm-ultimate:latest)
+#   runs those layers as proper SWA; earlier images ran them as full attention, so drafting
+#   collapsed once context grew past ~2048 tokens. PR #41703 additionally makes
+#   --enable-prefix-caching corruption-immune with DFlash. Net: long-context drafting holds
+#   up; short-context (<2048, one window) is unchanged.
 #
 # The XS body has a grafted MTP head, but the Spark recipe intentionally uses
-# external DFlash k=15. Keep this compose focused on the benchmarked v4 path:
+# external DFlash n=12. Keep this compose focused on the benchmarked path:
 # XS body, modelopt quantization, CUTLASS NVFP4, CUDA graphs, Qwen3 reasoning,
 # Qwen3-Coder tool calls, and the DFlash drafter.
 #
-# Image:       ghcr.io/aeon-7/vllm-aeon-ultimate-dflash:qwen36-v4
+# Image:       ghcr.io/aeon-7/aeon-vllm-ultimate:latest
+#              (= tag :2026-06-11-pr41703; rollback tag :2026-06-04-pr44389)
 # Hardware:    DGX Spark (NVIDIA GB10, 128 GB unified memory, sm_121a)
 #
 # Required downloads (run once):
 #   hf auth login                                          # if not already authenticated
-#   hf download AEON-7/Qwen3.6-27B-AEON-Ultimate-Uncensored-Multimodal-NVFP4-MTP-XS
-#   hf download z-lab/Qwen3.6-27B-DFlash
+#   hf download AEON-7/Qwen3.6-27B-AEON-Ultimate-Uncensored-Multimodal-NVFP4-MTP-XS \
+#     --local-dir ./models/aeon-ultimate-multimodal-nvfp4-mtp-xs
+#   hf download z-lab/Qwen3.6-27B-DFlash \
+#     --local-dir ./models/dflash-drafter
 #   # Note: z-lab/Qwen3.6-27B-DFlash is auto-gated. First download will redirect
 #   # you to accept the terms-of-use page (one click, instant approval).
 #
@@ -39,7 +53,7 @@
 
 services:
   vllm:
-    image: ghcr.io/aeon-7/vllm-aeon-ultimate-dflash:qwen36-v4
+    image: ghcr.io/aeon-7/aeon-vllm-ultimate:latest
     container_name: aeon-ultimate-xs
     restart: unless-stopped
     network_mode: host
@@ -50,7 +64,6 @@ services:
     environment:
       # ─── Core vLLM ───
       - VLLM_ALLOW_LONG_MAX_MODEL_LEN=1
-      - VLLM_HTTP_TIMEOUT_KEEP_ALIVE=60
 
       # ─── GB10 / sm_121a runtime ───
       - TORCH_CUDA_ARCH_LIST=12.1a
@@ -71,29 +84,27 @@ services:
       - VLLM_NVFP4_GEMM_BACKEND=flashinfer-cutlass
 
     volumes:
-      # XS multimodal body (modelopt format, ~21 GB) — replaces the regular NVFP4 body
-      #- /home/wantez/.cache/huggingface/hub/models--AEON-7--Qwen3.6-27B-AEON-Ultimate-Uncensored-Multimodal-NVFP4-MTP-XS:/models/xs
-      # DFlash drafter (~3.46 GB)
-     # - /home/wantez/.cache/huggingface/hub/models--z-lab--Qwen3.6-27B-DFlash:/models/dflash-drafter
-      - /home/wantez/models/dflash-drafter:/models/dflash-drafter
-      - /home/wantez/.cache/huggingface:/root/.cache/huggingface
-      - /home/wantez/.triton/cache:/root/.triton/cache
-      - /home/wantez/.cache/vllm:/root/.cache/vllm
+      - ./models/dflash-drafter:/models/dflash-drafter
+      - ~/.cache/huggingface:/root/.cache/huggingface
+      - ~/.triton/cache:/root/.triton/cache
+      - ~/.cache/vllm:/root/.cache/vllm
     command:
       - bash
       - -c
       - |
-        exec vllm serve AEON-7/Qwen3.6-27B-AEON-Ultimate-Uncensored-Multimodal-NVFP4-MTP-XS \
-          --served-model-name Qwen3.6-27B-AEON-NVFP4-XS aeon-ultimate qwen36-ultimate aeon-fast aeon-deep aeon-ultimate-xs \
+        exec vllm serve /models/xs \
+          --served-model-name Qwen3.6-27B \
           --host 0.0.0.0 --port 8000 \
           --tensor-parallel-size 1 \
           --dtype auto \
           --quantization modelopt \
           --kv-cache-dtype auto \
-          --max-model-len 262144 \
+          --mamba-cache-dtype float16 \
+          --mamba-block-size 256 \
+          --max-model-len 131072 \
           --max-num-seqs 64 \
           --max-num-batched-tokens 32768 \
-          --gpu-memory-utilization 0.85 \
+          --gpu-memory-utilization 0.75 \
           --enable-chunked-prefill \
           --no-enable-prefix-caching \
           --generation-config vllm \
@@ -103,28 +114,11 @@ services:
           --tool-call-parser qwen3_coder \
           --reasoning-parser qwen3 \
           --attention-backend flash_attn \
-          --language-model-only \
-          --speculative-config '{"method":"dflash","model":"/models/dflash-drafter","num_speculative_tokens":15}'
-        # Notes on configuration choices:
-        #   - --quantization modelopt — required for the XS body. The XS body ships in
-        #     modelopt format (NVFP4 element + FP8 per-block + FP32 per-tensor scales).
-        #     The previous regular NVFP4 body was compressed-tensors format; modelopt is
-        #     the format vLLM serves through this code path.
-        #   - --speculative-config '{"method":"dflash",...}' — DFlash with the external
-        #     z-lab drafter. The XS body has a grafted MTP head in its safetensors but
-        #     it is *not* used here. Don't switch this to method:"qwen3_5_mtp" unless
-        #     you are deliberately running an ablation.
-        #   - --gpu-memory-utilization 0.75 is the default gateway cap when ASR, TTS,
-        #     embedding, or other GPU services share the Spark. If this is the only
-        #     major GPU workload, 0.85 is the long-context production cap; 0.88+ can
-        #     thrash unified memory. (RTX PRO 6000 has more headroom — it caps at 0.94.)
-        #   - --max-num-batched-tokens 32768 is the ceiling. vLLM's inductor compile-range
-        #     endpoint is [32768], so above 32k prefill falls back to eager mode.
-
-    # GPU exposure — required on hosts where Docker's default-runtime is not 'nvidia'.
-    # The DGX Spark base image ships with `default-runtime: nvidia` so this block is a
-    # no-op there, but on most other Linux hosts (default-runtime: runc) the container
-    # cannot see the GPU without it. Reported in issue #5; canonical Docker Compose v3
+          --limit-mm-per-prompt '{"image": 4, "video": 2}' \
+          --mm-encoder-tp-mode data \
+          --mm-processor-cache-type shm \
+          --mm-shm-cache-max-object-size-mb 256 \
+          --speculative-config '{"method":"dflash","model":"/models/dflash-drafter","num_speculative_tokens":12}'
     # spec for GPU reservation.
     deploy:
       resources:
