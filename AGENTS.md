@@ -130,6 +130,7 @@ For detailed parameter explanations, quantization deep-dives, and benchmark inte
 
 | Document | What it covers |
 |----------|---------------|
+| [docs/sparkrun-recipes.md](docs/sparkrun-recipes.md) | What sparkrun is, how recipes execute, full v2 schema, registries, hooks, container engine, VRAM estimation |
 | [docs/index.md](docs/index.md) | Navigation hub — links to all docs with "when to read what" guidance |
 | [docs/vllm-params.md](docs/vllm-params.md) | Master reference of every vLLM `--flag` used in recipes, grouped by function |
 | [docs/vllm-env-vars.md](docs/vllm-env-vars.md) | All environment variables (CUDA, FlashInfer, vLLM internal, NVFP4-specific) |
