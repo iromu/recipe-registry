@@ -1,8 +1,8 @@
 recipe_version: "2"
 model: nvidia/Qwen3.6-35B-A3B-NVFP4
 runtime: vllm
-#container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly:latest
-container: vllm-node
+container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly:latest
+#container: vllm-node
 
 metadata:
   description: |
@@ -35,8 +35,10 @@ defaults:
   host: 0.0.0.0
   tensor_parallel: 1
   pipeline_parallel: 1
-  gpu_memory_utilization: 0.52 # 4.1x multiplier
-#  gpu_memory_utilization: 0.8 # 7.5x multiplier
+#  gpu_memory_utilization: 0.3 # 1.4x multiplier
+#  gpu_memory_utilization: 0.52 # 4.1x multiplier, 8.2x (vs max_model_len=131,072)
+  gpu_memory_utilization: 0.6 # 5.1x (vs max_model_len=262,144),  10.2x (vs max_model_len=131,072)
+  #  gpu_memory_utilization: 0.8 # 7.5x multiplier
 #  gpu_memory_utilization: 0.9 # 8.7x multiplier
   max_model_len: 262144
   max_num_batched_tokens: 8192
@@ -49,6 +51,7 @@ defaults:
 
 env:
    FLASHINFER_DISABLE_VERSION_CHECK: 1
+   VLLM_MARLIN_USE_ATOMIC_ADD: 1
    CUTE_DSL_ARCH: sm_121a
 
 command: |
