@@ -42,10 +42,11 @@ defaults:
 #  gpu_memory_utilization: 0.9 # 8.7x multiplier
   max_model_len: 262144
   max_num_batched_tokens: 32768
+  max_num_seqs: 4
   load_format: instanttensor
   kv_cache_dtype: fp8
   attention_backend: flashinfer
-  tool_call_parser: qwen3_coder
+  tool_call_parser: qwen3_xml
   reasoning_parser: qwen3
   speculative_config: '{"method":"mtp","num_speculative_tokens":3,"moe_backend":"triton"}'
 
@@ -58,10 +59,10 @@ command: |
   vllm serve {model} \
     --host {host} \
     --port {port} \
-    --served-model-name Qwen3.6-35B-A3B Qwen3.6-35B-A3B-NVFP4 nvidia/Qwen3.6-35B-A3B-NVFP4 \
+    --served-model-name Qwen3.6-35B-A3B {model} \
     --max-model-len {max_model_len} \
     --max-num-batched-tokens {max_num_batched_tokens} \
-    --max-num-seqs 4 \
+    --max-num-seqs {max_num_seqs} \
     --moe-backend marlin \
     --trust-remote-code \
     --language-model-only \

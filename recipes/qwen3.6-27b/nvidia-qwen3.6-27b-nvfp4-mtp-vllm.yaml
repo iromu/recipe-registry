@@ -6,9 +6,6 @@ container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly:latest
 metadata:
   description: nvidia/Qwen3.6-27B-NVFP4
 
-mods:
-  - mods/fix-qwen3.6-chat-template
-
 defaults:
   port: 8000
   host: 0.0.0.0
@@ -17,6 +14,7 @@ defaults:
   gpu_memory_utilization: 0.8 #  2.8x (vs max_model_len=262,144)
   max_model_len: 262144
   max_num_batched_tokens: 32768
+  max_num_seqs: 4
   load_format: instanttensor
   kv_cache_dtype: fp8
   attention_backend: flashinfer
@@ -35,10 +33,10 @@ command: |
     --port {port} \
     --max-model-len {max_model_len} \
     --max-num-batched-tokens {max_num_batched_tokens} \
+    --max-num-seqs {max_num_seqs} \
     --trust-remote-code \
     --quantization modelopt \
     --language-model-only \
-    --chat-template fixed_chat_template.jinja \
     --gpu-memory-utilization {gpu_memory_utilization} \
     --enable-auto-tool-choice \
     --tool-call-parser {tool_call_parser} \
@@ -46,8 +44,9 @@ command: |
     --kv-cache-dtype {kv_cache_dtype} \
     --load-format {load_format} \
     --attention-backend {attention_backend} \
-    --speculative-config '{speculative_config}' \
+    --speculative-config '{speculative_config}' \    
     --enable-prefix-caching \
+    --enable-auto-tool-choice \
     -tp {tensor_parallel} \
     -pp {pipeline_parallel} \
     --default-chat-template-kwargs '{"preserve_thinking":true}' \
