@@ -15,7 +15,7 @@ defaults:
   #  gpu_memory_utilization: 0.8 #  2.4x (vs max_model_len=262,144)
   max_model_len: 131072
   max_num_batched_tokens: 32768
-  max_num_seqs: 4
+  max_num_seqs: 2
   load_format: instanttensor
   kv_cache_dtype: fp8
   attention_backend: flashinfer
