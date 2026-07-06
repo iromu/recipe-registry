@@ -1,6 +1,7 @@
-MODEL_TAG="unsloth/Qwen3.6-27B-NVFP4"
+MODEL_TAG="sakamakismile/Qwen3.6-27B-Text-NVFP4-MTP"
 MODEL_RECIPE="qwen3.6-27b-nvfp4-mtp-vllm"
 
+MODEL_HOST=spark.local
 # vLLM (:8000), llama.cpp (:8080), SGLang (:30000), LiteLLM (:4000), Ollama (:11434), or TGI (:5000)
 MODEL_PORT=8000
 
@@ -8,19 +9,19 @@ MODEL_PORT=8000
 uvx tool-eval-bench \
   --spec-bench --spec-method auto --spec-prompts "code,structured" \
   --model ${MODEL_TAG} --backend vllm  \
-  --base-url http://spark.local:${MODEL_PORT} && \
+  --base-url http://${MODEL_HOST}:${MODEL_PORT} && \
   latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
   cp -f $latest_file "benchmarks/spec_${MODEL_RECIPE}.md"
 
 uvx tool-eval-bench \
   --perf \
   --model ${MODEL_TAG} --backend vllm  \
-  --base-url http://spark.local:${MODEL_PORT} && \
+  --base-url http://${MODEL_HOST}:${MODEL_PORT} && \
   latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
   cp -f $latest_file "benchmarks/tool_${MODEL_RECIPE}.md"
 
 uvx llama-benchy \
-  --base-url http://spark.local:${MODEL_PORT}/v1 \
+  --base-url http://${MODEL_HOST}:${MODEL_PORT}/v1 \
   --model $MODEL_TAG \
   --depth 0 4096 8192 \
   --pp 2048 \

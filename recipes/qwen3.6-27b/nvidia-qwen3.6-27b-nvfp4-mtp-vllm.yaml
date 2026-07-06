@@ -1,10 +1,10 @@
 recipe_version: "2"
-model: sakamakismile/Qwen3.6-27B-Text-NVFP4-MTP
+model: nvidia/Qwen3.6-27B-NVFP4
 runtime: vllm
 container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly:latest
 
 metadata:
-  description: sakamakismile/Qwen3.6-27B-Text-NVFP4-MTP
+  description: nvidia/Qwen3.6-27B-NVFP4
 
 mods:
   - mods/fix-qwen3.6-chat-template
@@ -17,7 +17,6 @@ defaults:
   gpu_memory_utilization: 0.8 #  2.8x (vs max_model_len=262,144)
   max_model_len: 262144
   max_num_batched_tokens: 32768
-  max_num_seqs: 2
   load_format: instanttensor
   kv_cache_dtype: fp8
   attention_backend: flashinfer
@@ -27,6 +26,7 @@ defaults:
 
 env:
   VLLM_MARLIN_USE_ATOMIC_ADD: "1"
+  CUTE_DSL_ARCH: sm_121a
 
 command: |
   vllm serve {model} \
@@ -35,7 +35,6 @@ command: |
     --port {port} \
     --max-model-len {max_model_len} \
     --max-num-batched-tokens {max_num_batched_tokens} \
-    --max-num-seqs {max_num_seqs} \
     --trust-remote-code \
     --quantization modelopt \
     --language-model-only \
