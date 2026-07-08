@@ -1,5 +1,5 @@
-MODEL_TAG="nvidia/Qwen3.6-27B-NVFP4"
-MODEL_RECIPE="nvidia-qwen3.6-27b-nvfp4-mtp-vllm"
+MODEL_TAG="nvidia/NVIDIA-Nemotron-Labs-3-Puzzle-75B-A9B-NVFP4"
+MODEL_RECIPE="nvidia-nemotron-labs-3-puzzle-75b-a9b-nvfp4-mtp-vllm"
 
 MODEL_HOST=spark.local
 # vLLM (:8000), llama.cpp (:8080), SGLang (:30000), LiteLLM (:4000), Ollama (:11434), or TGI (:5000)
