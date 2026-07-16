@@ -12,7 +12,7 @@ defaults:
   host: 0.0.0.0
   tensor_parallel: 1
   pipeline_parallel: 1
-  gpu_memory_utilization: 0.9
+  gpu_memory_utilization: 0.8 # 1.1x (vs max_model_len=131,072)
   max_model_len: 131072
   max_num_batched_tokens: 16384
   kv_cache_dtype: fp8
@@ -20,9 +20,6 @@ defaults:
   reasoning_parser: "gemma4"
   load_format: "fastsafetensors"
   speculative_config: '{"model":"google/gemma-4-31B-it-assistant","num_speculative_tokens":10}'
-
-env:
-  VLLM_MARLIN_USE_ATOMIC_ADD: "1"
 
 command: |
   vllm serve {model} \
