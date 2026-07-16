@@ -1,17 +1,17 @@
-MODEL_TAG="nvidia/NVIDIA-Nemotron-Labs-3-Puzzle-75B-A9B-NVFP4"
-MODEL_RECIPE="nvidia-nemotron-labs-3-puzzle-75b-a9b-nvfp4-mtp-vllm"
+MODEL_TAG="google/gemma-4-E4B-it"
+MODEL_RECIPE="gemma-4-e4b-it-bf16-vllm"
 
 MODEL_HOST=spark.local
 # vLLM (:8000), llama.cpp (:8080), SGLang (:30000), LiteLLM (:4000), Ollama (:11434), or TGI (:5000)
 MODEL_PORT=8000
 
 # --backend: vllm, litellm, llamacpp
-uvx tool-eval-bench \
-  --spec-bench --spec-method auto --spec-prompts "code,structured" \
-  --model ${MODEL_TAG} --backend vllm  \
-  --base-url http://${MODEL_HOST}:${MODEL_PORT} && \
-  latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
-  cp -f $latest_file "benchmarks/spec_${MODEL_RECIPE}.md"
+#uvx tool-eval-bench \
+#  --spec-bench --spec-method auto --spec-prompts "code,structured" \
+#  --model ${MODEL_TAG} --backend vllm  \
+#  --base-url http://${MODEL_HOST}:${MODEL_PORT} && \
+#  latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
+#  cp -f $latest_file "benchmarks/spec_${MODEL_RECIPE}.md"
 
 uvx tool-eval-bench \
   --perf \

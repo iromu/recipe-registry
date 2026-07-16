@@ -1,0 +1,53 @@
+recipe_version: "2"
+model: google/gemma-4-E4B-it
+runtime: vllm
+min_nodes: 1
+container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly-tf5:latest
+
+metadata:
+  description: |
+    google/gemma-4-E4B-it (Google Upstream BF16 Model)
+    
+    # Tool-Call Benchmark — google/gemma-4-E4B-it
+      - **Run ID**: `2026-07-16T19-51-34Z_f79995`
+      - **Date**: `2026-07-16T19:59:57.377805+00:00`
+      - **tool-eval-bench**: `v1.5.1 a577b84`
+      - **Final Score**: **68** / 100
+      - **Total Points**: 94 / 138
+      - **Rating**: ★★★ Adequate
+    
+      - **Tool Definition Overhead**: ~4,637 tokens (52 tools, 18,548 chars)
+      - **Deployability**: **66** / 100 (α=0.7)
+      - **Quality**: 68 / 100
+      - **Responsiveness**: 62 / 100 (median turn: 2.1s)
+
+defaults:
+  port: 8000
+  host: 0.0.0.0
+  tensor_parallel: 1
+  pipeline_parallel: 1
+  gpu_memory_utilization: 0.8 # 7.8x (vs max_model_len=131,072)
+  max_model_len: 131072
+  max_num_batched_tokens: 8192
+  kv_cache_dtype: auto
+  tool_call_parser: "gemma4"
+  reasoning_parser: "gemma4"
+  load_format: "fastsafetensors"
+
+command: |
+  vllm serve {model} \
+    --max-model-len {max_model_len} \
+    --kv-cache-dtype {kv_cache_dtype} \
+    --gpu-memory-utilization {gpu_memory_utilization} \
+    --host {host} \
+    --port {port} \
+    --load-format {load_format} \
+    --enable-prefix-caching \
+    --tool-call-parser {tool_call_parser} \
+    --enable-auto-tool-choice \
+    --reasoning-parser {reasoning_parser} \
+    --async-scheduling \
+    --max-num-batched-tokens {max_num_batched_tokens} \
+    --trust-remote-code \
+    -tp {tensor_parallel} \
+    -pp {pipeline_parallel}
