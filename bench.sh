@@ -1,5 +1,5 @@
-MODEL_TAG="nvidia/Gemma-4-31B-IT-NVFP4"
-MODEL_RECIPE="gemma4-31b-it-nvfp4-mtp-vllm"
+MODEL_TAG="nvidia/Qwen3.6-35B-A3B-NVFP4"
+MODEL_RECIPE="qwen3.6-35b-a3b-nvfp4-mtp-vllm"
 
 MODEL_HOST=spark.local
 # vLLM (:8000), llama.cpp (:8080), SGLang (:30000), LiteLLM (:4000), Ollama (:11434), or TGI (:5000)
