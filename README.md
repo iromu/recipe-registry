@@ -37,8 +37,11 @@ sparkrun run @iromu/my-awesome-recipe
 sparkrun show @iromu/my-awesome-recipe
 ```
 
-## 🏆 Model Leaderboard                                                                                                        
+## 🏆 Model Tool Eval Leaderboard                                                                                                        
 [LEADERBOARD.md](LEADERBOARD.md)
+
+## ⚡ Recipe Speed Leaderboard                                                                                                        
+[SPEED_LEADERBOARD.md](SPEED_LEADERBOARD.md)
 
 ## Links
 
