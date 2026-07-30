@@ -1,47 +1,47 @@
 recipe_version: "2"
-model: nvidia/Qwen3.6-27B-NVFP4
+model: unsloth/Qwen3.6-35B-A3B-NVFP4-Fast
 runtime: vllm
-container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly-tf5:latest
+container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly:latest
+#container: vllm-node
 
 metadata:
   description: |
-    https://howtospark.com/recipes/qwen3-6-27b-nvfp4
-    KV cache · FP8 — 14 GiB Pinned with --kv-cache-memory-bytes 15032385536 → 386,698 tokens = 1.48x concurrency at 262,144 tokens/request with k=5. 
-    fp8 is the checkpoint's own request (kv_cache_quant_algo: FP8). 
-    Only 16 of 64 layers hold KV, so a token costs just 32.8 KiB
+    https://howtospark.com/recipes/qwen3-6-35b-a3b-nvfp4-fast
+    
+    KV cache · FP8 — 4 GiB pinned with --kv-cache-memory-bytes 4294967296 → 343,699 tokens = 1.31x concurrency at 262,144 tokens/request with k=3. 
+    Uncapped at util 0.85 the pool takes 75.12 GiB for 29.1x, which one user cannot spend
 
 defaults:
-  port: 8001
+  port: 8000
   host: 0.0.0.0
   tensor_parallel: 1
   pipeline_parallel: 1
-  gpu_memory_utilization: 0.9 #  2.8x (vs max_model_len=262,144)
+  gpu_memory_utilization: 0.85
   max_model_len: 262144
   max_num_batched_tokens: 8192
   max_num_seqs: 4
-  speculative_config: '{"method": "mtp", "num_speculative_tokens": 5}'
   tool_call_parser: qwen3_xml
   reasoning_parser: qwen3
-
+  speculative_config: '{"method":"mtp","num_speculative_tokens":3}'
 
 command: |
   vllm serve {model} \
-    --served-model-name Qwen3.6-27B {model} \
     --host {host} \
     --port {port} \
+    --served-model-name Qwen3.6-35B-A3B {model} \
     --max-model-len {max_model_len} \
     --max-num-batched-tokens {max_num_batched_tokens} \
     --max-num-seqs {max_num_seqs} \
+    --kv-cache-memory-bytes 4294967296 \
+    --trust-remote-code \
+    --language-model-only \
     --gpu-memory-utilization {gpu_memory_utilization} \
-    --kv-cache-memory-bytes 15032385536 \
-    --speculative-config '{speculative_config}' \
     --enable-auto-tool-choice \
     --tool-call-parser {tool_call_parser} \
     --reasoning-parser {reasoning_parser} \
+    --speculative-config '{speculative_config}' \
     -tp {tensor_parallel} \
     -pp {pipeline_parallel} \
     --default-chat-template-kwargs '{"preserve_thinking":true}' \
     --generation-config vllm \
     --override-generation-config '{"temperature": 0.6, "top_p": 0.95, "top_k": 20, "min_p": 0.0, "presence_penalty": 0.0, "repetition_penalty": 1.0}'
-
-
