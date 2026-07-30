@@ -1,6 +1,6 @@
 # ⚡ Speed Leaderboard
 
-> Auto-generated from `benchmarks/benchy*.json` on 2026-07-17 01:01 
+> Auto-generated from `benchmarks/benchy*.json` on 2026-07-30 18:53 
 
 Generation throughput (tokens/sec) at **concurrency=1, context_size=0** (prompt=2048, response=128).
 Each recipe is listed independently — the same model with different configs appears as separate rows.
@@ -22,10 +22,10 @@ Each recipe is listed independently — the same model with different configs ap
 | 13 | nvidia-nemotron-labs-3-puzzle-75b-a9b-nvfp4-mtp-vllm | 📐 | nvidia/NVIDIA-Nemotron-Labs-3-Puzzle-75B-A9B-NVFP4 | 34.4 ±1.6 | 2026-07-08 23:15:24Z |
 | 14 | qwen3.6-27b-fp8-dflash-vllm | 🔥 | Qwen/Qwen3.6-27B-FP8 | 32.9 ±7.9 | 2026-05-26 11:54:43Z |
 | 15 | qwen3.5-122b-a10b-nvfp4-mtp-vllm | 📐 | nvidia/Qwen3.5-122B-A10B-NVFP4 | 29.5 ±2.1 | 2026-06-06 23:30:21Z |
-| 16 | qwen3.6-27b-nvfp4-dflash-docker | 🔥 | Qwen3.6-27B-AEON-NVFP4-XS | 29.3 ±1.5 | 2026-05-16 09:25:13Z |
-| 17 | qwen3.6-27b-int4-autorun-mtp-vllm | 📐 | Intel/Qwen3.6-27B-int4-AutoRound | 26.7 ±1.3 | 2026-05-28 22:11:07Z |
-| 18 | nvidia-qwen3.6-27b-nvfp4-mtp-vllm | 📐 | nvidia/Qwen3.6-27B-NVFP4 | 24.1 ±3.8 | 2026-07-06 20:13:31Z |
-| 19 | qwen3.6-27b-nvfp4-mtp-vllm | 📐 | sakamakismile/Qwen3.6-27B-Text-NVFP4-MTP | 22.2 ±1.1 | 2026-05-28 07:17:54Z |
+| 16 | qwen3.6-27b-nvfp4-mtp-vllm | 📐 | nvidia/Qwen3.6-27B-NVFP4 | 29.4 ±1.4 | 2026-07-30 15:24:33Z |
+| 17 | qwen3.6-27b-nvfp4-dflash-docker | 🔥 | Qwen3.6-27B-AEON-NVFP4-XS | 29.3 ±1.5 | 2026-05-16 09:25:13Z |
+| 18 | qwen3.6-27b-int4-autorun-mtp-vllm | 📐 | Intel/Qwen3.6-27B-int4-AutoRound | 26.7 ±1.3 | 2026-05-28 22:11:07Z |
+| 19 | nvidia-qwen3.6-27b-nvfp4-mtp-vllm | 📐 | nvidia/Qwen3.6-27B-NVFP4 | 24.1 ±3.8 | 2026-07-06 20:13:31Z |
 | 20 | qwopus3.6-27b-coder-compat-mtp-q4_k_s-llamacpp | 📐 | Jackrong/Qwopus3.6-27B-Coder-Compat-MTP-GGUF | 18.9 ±3.1 | 2026-06-23 20:36:13Z |
 | 21 | gemma-4-e4b-it-bf16-vllm |  | google/gemma-4-E4B-it | 18.8 ±0.0 | 2026-07-16 20:07:38Z |
 | 22 | gemma4-31b-it-nvfp4-mtp-vllm | 📐 | nvidia/Gemma-4-31B-IT-NVFP4 | 11.4 ±2.5 | 2026-07-16 23:33:59Z |
