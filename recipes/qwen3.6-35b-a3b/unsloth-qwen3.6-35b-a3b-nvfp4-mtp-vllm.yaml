@@ -16,10 +16,11 @@ defaults:
   host: 0.0.0.0
   tensor_parallel: 1
   pipeline_parallel: 1
-  gpu_memory_utilization: 0.85
+  gpu_memory_utilization: 0.5
   max_model_len: 262144
   max_num_batched_tokens: 8192
   max_num_seqs: 4
+  kv_cache_memory_bytes: 4294967296
   tool_call_parser: qwen3_xml
   reasoning_parser: qwen3
   speculative_config: '{"method":"mtp","num_speculative_tokens":3}'
@@ -32,7 +33,7 @@ command: |
     --max-model-len {max_model_len} \
     --max-num-batched-tokens {max_num_batched_tokens} \
     --max-num-seqs {max_num_seqs} \
-    --kv-cache-memory-bytes 4294967296 \
+    --kv-cache-memory-bytes {kv_cache_memory_bytes} \
     --trust-remote-code \
     --language-model-only \
     --gpu-memory-utilization {gpu_memory_utilization} \
