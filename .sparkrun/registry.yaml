@@ -4,4 +4,5 @@ registries:
     recipes: recipes
     tuning: tuning
     benchmarks: benchmarking
+    mods: mods
     visible: true
