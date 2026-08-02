@@ -1,5 +1,5 @@
-MODEL_TAG="shieldstar/Qwen3.5-122B-A10B-int4-AutoRound-EC"
-MODEL_RECIPE="shieldstar-qwen3.5-122b-a10b-int4-autoround-mtp-vllm"
+MODEL_TAG="DeepSeek-V4-Flash-IQ2XXS-w2Q2K-AProjQ8-SExpQ8-OutQ8-chat-v2-imatrix-0731"
+MODEL_RECIPE="DwarfStar"
 
 MODEL_HOST=spark.local
 # vLLM (:8000), llama.cpp (:8080), SGLang (:30000), LiteLLM (:4000), Ollama (:11434), or TGI (:5000)
