@@ -21,7 +21,7 @@ defaults:
 #  max_model_len: 262144
   max_num_batched_tokens: 8192
   max_num_seqs: 4
-#  kv_cache_memory_bytes: 15032385536
+  kv_cache_memory_bytes: 75674580890
   speculative_config: '{"method": "mtp", "num_speculative_tokens": 5}'
   tool_call_parser: qwen3_xml
   reasoning_parser: qwen3
@@ -37,6 +37,7 @@ command: |
     --max-num-batched-tokens {max_num_batched_tokens} \
     --max-num-seqs {max_num_seqs} \
     --gpu-memory-utilization {gpu_memory_utilization} \
+    --kv-cache-memory-bytes {kv_cache_memory_bytes} \
     --speculative-config '{speculative_config}' \
     --enable-auto-tool-choice \
     --tool-call-parser {tool_call_parser} \
@@ -47,6 +48,3 @@ command: |
     --generation-config vllm \
     --override-generation-config '{coding_config}'
 
-
-
-#    --kv-cache-memory-bytes {kv_cache_memory_bytes} \
