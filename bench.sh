@@ -1,5 +1,5 @@
-MODEL_TAG="DeepSeek-V4-Flash-IQ2XXS-w2Q2K-AProjQ8-SExpQ8-OutQ8-chat-v2-imatrix-0731"
-MODEL_RECIPE="DwarfStar"
+MODEL_TAG="nvidia/Qwen3.6-27B-NVFP4"
+MODEL_RECIPE="qwen3.6-27b-nvfp4-mtp-vllm"
 
 MODEL_HOST=spark.local
 # vLLM (:8000), llama.cpp (:8080), SGLang (:30000), LiteLLM (:4000), Ollama (:11434), or TGI (:5000)

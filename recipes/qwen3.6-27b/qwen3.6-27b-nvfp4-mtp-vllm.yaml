@@ -11,18 +11,21 @@ metadata:
     Only 16 of 64 layers hold KV, so a token costs just 32.8 KiB
 
 defaults:
-  port: 8001
+  port: 8000
   host: 0.0.0.0
   tensor_parallel: 1
   pipeline_parallel: 1
-  gpu_memory_utilization: 0.5
-  max_model_len: 262144
+#  gpu_memory_utilization: 0.9 #2.8x (vs max_model_len=262,144)
+  gpu_memory_utilization: 0.8 # 4.8x (vs max_model_len=131,072)
+  max_model_len: 131072
+#  max_model_len: 262144
   max_num_batched_tokens: 8192
   max_num_seqs: 4
-  kv_cache_memory_bytes: 15032385536
+#  kv_cache_memory_bytes: 15032385536
   speculative_config: '{"method": "mtp", "num_speculative_tokens": 5}'
   tool_call_parser: qwen3_xml
   reasoning_parser: qwen3
+  coding_config: '{"temperature": 0.6, "top_p": 0.95, "top_k": 20, "min_p": 0.0, "presence_penalty": 0.0, "repetition_penalty": 1.0}'
 
 
 command: |
@@ -34,7 +37,6 @@ command: |
     --max-num-batched-tokens {max_num_batched_tokens} \
     --max-num-seqs {max_num_seqs} \
     --gpu-memory-utilization {gpu_memory_utilization} \
-    --kv-cache-memory-bytes {kv_cache_memory_bytes} \
     --speculative-config '{speculative_config}' \
     --enable-auto-tool-choice \
     --tool-call-parser {tool_call_parser} \
@@ -43,6 +45,8 @@ command: |
     -pp {pipeline_parallel} \
     --default-chat-template-kwargs '{"preserve_thinking":true}' \
     --generation-config vllm \
-    --override-generation-config '{"temperature": 0.6, "top_p": 0.95, "top_k": 20, "min_p": 0.0, "presence_penalty": 0.0, "repetition_penalty": 1.0}'
+    --override-generation-config '{coding_config}'
 
 
+
+#    --kv-cache-memory-bytes {kv_cache_memory_bytes} \
