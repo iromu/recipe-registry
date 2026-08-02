@@ -1,0 +1,63 @@
+# Recipe: Intel Qwen3.5-122B-A10B-int4-AutoRound-EC
+
+recipe_version: "1"
+name: Qwen3.5-122B-A10B-int4-AutoRound-EC
+description: vLLM serving Qwen3.5-122B-A10B-int4-AutoRound-EC
+
+# HuggingFace model to download (optional, for --download-model)
+model: shieldstar/Qwen3.5-122B-A10B-int4-AutoRound-EC
+
+solo_only: true
+
+# Container image to use
+container: vllm-node
+
+# https://forums.developer.nvidia.com/t/fastest-qwen-3-5-122b-int4-recipe-on-dgx-spark-tested-and-published-on-spark-arena/370834/13
+mods:
+  - @iromu/mods/fix-qwen3.5-enhanced-chat-template
+
+# Default settings (can be overridden via CLI)
+defaults:
+  port: 8000
+  host: 0.0.0.0
+  max_model_len: 196608
+  gpu_memory_utilization: 0.75
+  max_num_batched_tokens: 16384
+  max-num-seqs: 8
+  served_model_name: Qwen3.5-122B-A10B
+  speculative_dflash: '{"method": "dflash", "model":"z-lab/Qwen3.5-122B-A10B-DFlash", "num_speculative_tokens": 5}'
+  coding_config: '{"temperature": 0.7,  "top_p": 0.8, "top_k": 20, "presence_penalty": 0.0, "repetition_penalty": 1.0}'
+
+# Environment variables
+env:
+  VLLM_MARLIN_USE_ATOMIC_ADD: 1
+  FLASHINFER_DISABLE_VERSION_CHECK: 1
+  VLLM_ENABLE_CUDAGRAPH_GC: 1
+  VLLM_USE_FLASHINFER_SAMPLER: 1
+
+# The vLLM serve command template
+command: |
+  vllm serve {model} \
+  --served-model-name {served_model_name} {model} \
+  --max-model-len {max_model_len} \
+  --gpu-memory-utilization {gpu_memory_utilization} \
+  --max-num-batched-tokens {max_num_batched_tokens} \
+  --max-num-seqs {max-num-seqs} \
+  --dtype bfloat16 \
+  --attention-backend flash_attn \
+  --port {port} \
+  --host {host} \
+  --load-format fastsafetensors \
+  --enable-prefix-caching \
+  --enable-chunked-prefill \
+  --enable-prompt-tokens-details \
+  --default-chat-template-kwargs '{"preserve_thinking":true}' \
+  --speculative-config '{speculative_dflash}' \
+  --enable-auto-tool-choice \
+  --tool-call-parser qwen3_coder \
+  --chat-template qwen3.5-enhanced.jinja \
+  --reasoning-parser qwen3 \
+  --generation-config auto \
+  --override-generation-config '{coding_config}'
+
+#  --language-model-only
