@@ -15,12 +15,14 @@ defaults:
   max_model_len: 262144
   tool_call_parser: qwen3_coder
   reasoning_parser: nemotron_v3
+  speculative_config: '{ "model": "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4-DSpark", "method": "dspark", "num_speculative_tokens": 7}'
 
 command: |
   vllm serve {model} \
     --served-model-name nemotron {model}  \
     --moe-backend marlin \
     --max-model-len {max_model_len} \
+    --max-num-batched-tokens 16384 \
     --host {host} \
     --port {port} \
     --trust-remote-code \
@@ -28,10 +30,12 @@ command: |
     --tool-call-parser {tool_call_parser} \
     --reasoning-parser {reasoning_parser} \
     --kv-cache-dtype fp8 \
-    --enable-prefix-caching \  
+    --quantization modelopt_fp4 \
     --mamba-backend flashinfer \
+    --mamba-ssm-cache-dtype float16 \
+    --enable-mamba-cache-stochastic-rounding \
+    --mamba-cache-philox-rounds 5 \
+    --enable-prefix-caching \
     --mamba-cache-mode align \
-    --speculative_config.num_speculative_tokens 3 \
-    --speculative_config.model nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4-DSpark \
-    --kv-cache-dtype fp8 \
+    --speculative-config '{speculative_config}' \
     --gpu-memory-utilization {gpu_memory_utilization}
