@@ -1,0 +1,1 @@
+uvx sparkrun run nvidia-nemotron-3.5-lightning-30b-a3b-dspark-vllm
