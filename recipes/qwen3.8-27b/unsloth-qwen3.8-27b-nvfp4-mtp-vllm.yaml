@@ -1,0 +1,52 @@
+recipe_version: "2"
+model: unsloth/Qwen3.8-27B-NVFP4
+runtime: vllm
+container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly-tf5:latest
+
+metadata:
+  description: |
+    https://huggingface.co/unsloth/Qwen3.8-27B-NVFP4
+    
+    Thinking Mode: temperature=1.0, top_p=0.95, top_k=20, min_p=0.0, presence_penalty=0.0, repetition_penalty=1.0
+    Instruct (or non-thinking) mode: temperature=0.7, top_p=0.80, top_k=20, min_p=0.0, presence_penalty=1.5, repetition_penalty=1.0
+    
+    GPU KV cache size: 1,707,597 tokens, Maximum concurrency for 262,144 tokens per request: 6.51x
+
+
+defaults:
+  port: 8000
+  host: 0.0.0.0
+  tensor_parallel: 1
+  pipeline_parallel: 1
+  gpu_memory_utilization: 0.8 # 2.3x (vs max_model_len=262,144)
+  max_model_len: 262144
+  max_num_batched_tokens: 32768
+  max_num_seqs: 8
+  kv_cache_dtype: fp8
+  speculative_config: '{"method": "mtp", "num_speculative_tokens": 3}'
+  tool_call_parser: qwen3_xml
+  reasoning_parser: qwen3
+  thinking_config: '{"temperature": 1.0, "top_p": 0.95, "top_k": 20, "min_p": 0.0, "presence_penalty": 0.0, "repetition_penalty": 1.0}'
+  instruct_config: '{"temperature": 0.7, "top_p": 0.80, "top_k": 20, "min_p": 0.0, "presence_penalty": 1.5, "repetition_penalty": 1.0}'
+
+
+command: |
+  vllm serve {model} \
+    --served-model-name Qwen3.8-27B {model} \
+    --host {host} \
+    --port {port} \
+    --max-model-len {max_model_len} \
+    --max-num-batched-tokens {max_num_batched_tokens} \
+    --max-num-seqs {max_num_seqs} \
+    --gpu-memory-utilization {gpu_memory_utilization} \
+    --kv-cache-dtype {kv_cache_dtype} \
+    --speculative-config '{speculative_config}' \
+    --enable-auto-tool-choice \
+    --tool-call-parser {tool_call_parser} \
+    --reasoning-parser {reasoning_parser} \
+    -tp {tensor_parallel} \
+    -pp {pipeline_parallel} \
+    --default-chat-template-kwargs '{"preserve_thinking":true}' \
+    --generation-config vllm \
+    --override-generation-config '{instruct_config}'
+
