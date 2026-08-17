@@ -57,5 +57,6 @@ command: |
     --speculative-config '{speculative_config}' \
     --enable-prefix-caching \
     --enable-chunked-prefill \
+    --default-chat-template-kwargs '{"reasoning_effort":"medium"}' \
     -tp {tensor_parallel} \
     -pp {pipeline_parallel}
