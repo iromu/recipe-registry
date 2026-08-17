@@ -1,6 +1,6 @@
 # ⚡ Speed Leaderboard
 
-> Auto-generated from `benchmarks/benchy*.json` on 2026-08-16 11:11 
+> Auto-generated from `benchmarks/benchy*.json` on 2026-08-16 13:50 
 
 Generation throughput (tokens/sec) at **concurrency=1, context_size=0** (prompt=2048, response=128).
 Each recipe is listed independently — the same model with different configs appears as separate rows.
@@ -29,7 +29,7 @@ Each recipe is listed independently — the same model with different configs ap
 | 20 | qwen3.6-27b-nvfp4-dflash-docker | 🔥 | Qwen3.6-27B-AEON-NVFP4-XS | 29.3 ±1.5 | 2026-05-16 09:25:13Z |
 | 21 | qwen3.6-27b-int4-autorun-mtp-vllm | 📐 | Intel/Qwen3.6-27B-int4-AutoRound | 26.7 ±1.3 | 2026-05-28 22:11:07Z |
 | 22 | nvidia-qwen3.6-27b-nvfp4-mtp-vllm | 📐 | nvidia/Qwen3.6-27B-NVFP4 | 24.1 ±3.8 | 2026-07-06 20:13:31Z |
-| 23 | unsloth-qwen3.8-27b-nvfp4-mtp-vllm | 📐 | unsloth/Qwen3.8-27B-NVFP4 | 19.4 ±0.7 | 2026-08-16 10:08:50Z |
+| 23 | unsloth-qwen3.8-27b-nvfp4-mtp-vllm | 📐 | unsloth/Qwen3.8-27B-NVFP4 | 19.8 ±0.7 | 2026-08-16 11:18:43Z |
 | 24 | qwopus3.6-27b-coder-compat-mtp-q4_k_s-llamacpp | 📐 | Jackrong/Qwopus3.6-27B-Coder-Compat-MTP-GGUF | 18.9 ±3.1 | 2026-06-23 20:36:13Z |
 | 25 | gemma-4-e4b-it-bf16-vllm |  | google/gemma-4-E4B-it | 18.8 ±0.0 | 2026-07-16 20:07:38Z |
 | 26 | DwarfStar |  | DeepSeek-V4-Flash-IQ2XXS-w2Q2K-AProjQ8-SExpQ8-OutQ8-chat-v2-imatrix-0731 | 12.4 ±3.1 | 2026-08-01 18:54:47Z |
