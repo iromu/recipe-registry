@@ -1,5 +1,5 @@
 MODEL_TAG="unsloth/Qwen3.8-27B-NVFP4"
-MODEL_RECIPE="unsloth-qwen3.8-27b-nvfp4-mtp-vllm"
+MODEL_RECIPE="unsloth-qwen3.8-27b-nvfp4-dspark-vllm"
 
 MODEL_HOST=spark.local
 # vLLM (:8000), llama.cpp (:8080), SGLang (:30000), LiteLLM (:4000), Ollama (:11434), or TGI (:5000)

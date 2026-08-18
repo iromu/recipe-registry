@@ -1,0 +1,54 @@
+recipe_version: "2"
+model: unsloth/Qwen3.8-27B-NVFP4
+runtime: vllm
+container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly:latest
+
+metadata:
+  description: |
+    https://github.com/0xBakeer/Qwen3.8-27B-4-bit-on-a-single-DGX-Spark
+    https://x.com/0xBakeer/status/2089090318905774558
+
+defaults:
+  port: 8000
+  host: 0.0.0.0
+  tensor_parallel: 1
+  pipeline_parallel: 1
+#  gpu_memory_utilization: 0.8 # 2.3x (vs max_model_len=262,144)
+  gpu_memory_utilization: 0.8 # 4.7x (vs max_model_len=131,072)
+  max_model_len: 131072
+  max_num_batched_tokens: 16384
+  load_format: instanttensor
+  kv_cache_dtype: fp8
+  attention_backend: flashinfer
+  tool_call_parser: qwen3_xml
+  reasoning_parser: qwen3
+  mm_encoder_tp_mode: data
+  speculative_config: '{"method":"dspark",  "model":"Doopeworld/Qwen3.8-27B-DSpark-vLLM", "num_speculative_tokens":14, "draft_sample_method":"probabilistic"}'
+
+env:
+  VLLM_MARLIN_USE_ATOMIC_ADD: 1
+  LLM_USE_FLASHINFER_MOE_FP4: 0
+
+command: |
+  vllm serve {model} \
+    --served-model-name Qwen3.8-27B {model} \
+    --host {host} \
+    --port {port} \
+    --max-model-len {max_model_len} \
+    --max-num-batched-tokens {max_num_batched_tokens} \
+    --gpu-memory-utilization {gpu_memory_utilization} \
+    --enable-auto-tool-choice \
+    --trust-remote-code \
+    --tool-call-parser {tool_call_parser} \
+    --reasoning-parser {reasoning_parser} \
+    --kv-cache-dtype {kv_cache_dtype} \
+    --load-format {load_format} \
+    --attention-backend {attention_backend} \
+    --speculative-config '{speculative_config}' \
+    --enable-prefix-caching \
+    --enable-chunked-prefill \
+    --default-chat-template-kwargs '{"reasoning_effort":"medium"}' \
+    --limit-mm-per-prompt.image 2 \
+    --limit-mm-per-prompt.video 0 \
+    -tp {tensor_parallel} \
+    -pp {pipeline_parallel}
