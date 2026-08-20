@@ -23,7 +23,7 @@ defaults:
   tool_call_parser: qwen3_xml
   reasoning_parser: qwen3
   mm_encoder_tp_mode: data
-  speculative_config: '{"method":"dspark",  "model":"Doopeworld/Qwen3.8-27B-DSpark-vLLM", "num_speculative_tokens":14, "draft_sample_method":"probabilistic"}'
+  speculative_config: '{"method":"dspark",  "model":"Doopeworld/Qwen3.8-27B-DSpark-vLLM", "num_speculative_tokens":7, "draft_sample_method":"probabilistic"}'
 
 env:
   VLLM_MARLIN_USE_ATOMIC_ADD: 1
