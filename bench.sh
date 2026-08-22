@@ -1,14 +1,16 @@
-MODEL_TAG="iromu/qwen25-1.5b-tools-GGUF"
-MODEL_RECIPE="qwen2.5-1.5b-llama-cpp"
+MODEL_TAG="unsloth/Qwen2.5-1.5B-Instruct"
+MODEL_RECIPE="qwen2.5-1.5b-bf16-vllm"
 
 MODEL_HOST=spark.local
 # vLLM (:8000), llama.cpp (:8080), SGLang (:30000), LiteLLM (:4000), Ollama (:11434), or TGI (:5000)
 MODEL_PORT=8080
 
+
+
 uvx tool-eval-bench \
-    --perf \
-    --model ${MODEL_TAG} --backend llamacpp  \
-    --base-url http://${MODEL_HOST}:${MODEL_PORT} && \
+  --perf \
+  --model ${MODEL_TAG} --backend vllm  \
+  --base-url http://${MODEL_HOST}:${MODEL_PORT} && \
   latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
   cp -f $latest_file "benchmarks/tool_${MODEL_RECIPE}.md"
 
