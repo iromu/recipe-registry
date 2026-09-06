@@ -1,11 +1,18 @@
-MODEL_TAG="unsloth/Qwen2.5-1.5B-Instruct"
-MODEL_RECIPE="qwen2.5-1.5b-bf16-vllm"
+MODEL_TAG="qwen3.8-flash-next"
+MODEL_RECIPE="Qwen3.8-Flash-Next-Single-DGX-Spark"
 
 MODEL_HOST=spark.local
 # vLLM (:8000), llama.cpp (:8080), SGLang (:30000), LiteLLM (:4000), Ollama (:11434), or TGI (:5000)
-MODEL_PORT=8080
+MODEL_PORT=8888
 
 
+# --backend: vllm, litellm, llamacpp
+uvx tool-eval-bench \
+  --spec-bench --spec-method auto --spec-prompts "code,structured" \
+  --model ${MODEL_TAG} --backend vllm  \
+  --base-url http://${MODEL_HOST}:${MODEL_PORT} && \
+  latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
+  cp -f $latest_file "benchmarks/spec_${MODEL_RECIPE}.md"
 
 uvx tool-eval-bench \
   --perf \
