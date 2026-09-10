@@ -1,0 +1,98 @@
+recipe_version: "2"
+name: qwen3.8 flash next nvidia nvfp4 vllm mmap
+model: nvidia/Qwen3.8-Flash-Next-NVFP4
+runtime: vllm
+container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly:latest
+min_nodes: 1
+max_nodes: 1
+
+metadata:
+  description: |
+    Qwen3.8-Flash-Next NVFP4 on one DGX Spark, NVMe n-gram offload
+    https://github.com/molo-molo/qwen3.8-flash-next-single-sparkrun/blob/main/qwen3.8fn-nvidia-nvfp4-mtp-vllm-m0l0.yaml
+  maintainer: molo
+  model_params: 125B
+  model_dtype: nvfp4
+  kv_dtype: fp8
+
+# The vLLM patch set (disk-backed PLE table, staged gather, reduced-vocab
+# draft, upstream overlays) is applied inside the container before serve.
+# Resolved adjacent to this file: sparkrun/mods/qwen38fn-ple-disk/run.sh
+# (stage 2 of the mods resolution order). The optional 1-time n-gram
+# relocation check lives in mods/qwen38fn-ple-split and is OFF by default;
+# add it explicitly if you want the layout check/split step.
+mods:
+  - @iromu/mods/qwen38fn-ple-disk
+
+defaults:
+  port: 8000
+  host: 0.0.0.0 # bonds to local network, you may not want this
+  tensor_parallel: 1
+  gpu_memory_utilization: 0.80
+  max_model_len: 262144
+  max_num_seqs: 6
+  max_num_batched_tokens: 4096
+  served_model_name: qwen3.8-flash-next
+  quantization: modelopt
+  kv_cache_dtype: fp8_e4m3
+  # Mirrors the lane default: PLE_MODE=staged, GRAPHS=nocompile
+  # (capture widths (1+K)*seqs), MTP=3, DRAFT_VOCAB=65536, OVERLAYS=1.
+  # Scalar knobs so `-o mtp_tokens=4` etc. work; JSON stays literal in the
+  # command below (v2 spelling: plain braces, placeholders nest inside).
+  mtp_tokens: 3
+  capture_sizes: 4,8,12,16,20,24
+  tool_call_parser: qwen3_xml
+  reasoning_parser: qwen3
+
+env:
+  HF_HUB_OFFLINE: "1"
+  TRANSFORMERS_OFFLINE: "1"
+  VLLM_ENGINE_READY_TIMEOUT_S: "3600"
+  PYTORCH_CUDA_ALLOC_CONF: "expandable_segments:True"
+  CUTE_DSL_ARCH: "sm_121a"
+  TORCH_CUDA_ARCH_LIST: "12.1a"
+  FLASHINFER_CUDA_ARCH_LIST: "12.1a"
+  FLASHINFER_DISABLE_VERSION_CHECK: "1"
+  VLLM_USE_DEEP_GEMM: "0"
+  VLLM_USE_V2_MODEL_RUNNER: "1"
+  # PLE_MODE=staged: table stays on NVMe, rows gathered in prepare_inputs.
+  QWEN4EXP_PLE_MMAP: "1"
+  QWEN4EXP_PLE_STAGED: "1"
+  QWEN4EXP_PLE_MMAP_THREADS: "64"
+  # DRAFT_VOCAB=65536: reduced-vocabulary MTP draft (exact outputs).
+  QWEN4EXP_DRAFT_VOCAB: "65536"
+  # Set to "1" only if you also add mods/qwen38fn-ple-split and want the
+  # experimental 1-time PLE file split. Default "0" = check-only, no move.
+  QWEN38FN_PLE_SPLIT: "0"
+
+# The pinned nightly declares ENTRYPOINT ["vllm","serve"], which consumes the
+# command sparkrun appends (verified with docker inspect). Clearing it here
+# is the supported fix (sparkrun probes for exactly this and suggests
+# entrypoint: ""). user "0:0" matches the bash launcher, which runs the
+# container as root so the mod can install the patch files into
+# site-packages. See README.md for the derived-image alternative.
+executor_config:
+  entrypoint: ""
+  user: "0:0"
+
+command: |
+  vllm serve {model} \
+    --served-model-name {served_model_name} \
+    --host {host} \
+    --port {port} \
+    --trust-remote-code \
+    --quantization {quantization} \
+    --tensor-parallel-size {tensor_parallel} \
+    --max-model-len {max_model_len} \
+    --max-num-seqs {max_num_seqs} \
+    --gpu-memory-utilization {gpu_memory_utilization} \
+    --max-num-batched-tokens {max_num_batched_tokens} \
+    --kv-cache-dtype {kv_cache_dtype} \
+    --no-enable-flashinfer-autotune \
+    --enable-prefix-caching \
+    --reasoning-parser {reasoning_parser} \
+    --enable-auto-tool-choice \
+    --tool-call-parser {tool_call_parser} \
+    --default-chat-template-kwargs '{"reasoning_effort": "medium"}' \
+    --speculative-config '{"method":"mtp","num_speculative_tokens":{mtp_tokens}}' \
+    --compilation-config '{"mode":0,"cudagraph_mode":"FULL_DECODE_ONLY","cudagraph_capture_sizes":[{capture_sizes}]}'
