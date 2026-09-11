@@ -22,7 +22,7 @@ metadata:
 # relocation check lives in mods/qwen38fn-ple-split and is OFF by default;
 # add it explicitly if you want the layout check/split step.
 mods:
-  - @iromu/mods/qwen38fn-ple-disk
+  - mods/qwen38fn-ple-disk
 
 defaults:
   port: 8000
