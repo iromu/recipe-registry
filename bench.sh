@@ -1,9 +1,9 @@
-MODEL_TAG="qwen3.8-flash-next"
-MODEL_RECIPE="Qwen3.8-Flash-Next-Single-DGX-Spark"
+MODEL_TAG="nvidia/Qwen3.8-27B-NVFP4"
+MODEL_RECIPE="nvidia-qwen3.8-27b-nvfp4-mtp-vllm"
 
 MODEL_HOST=spark.local
 # vLLM (:8000), llama.cpp (:8080), SGLang (:30000), LiteLLM (:4000), Ollama (:11434), or TGI (:5000)
-MODEL_PORT=8888
+MODEL_PORT=8000
 
 
 # --backend: vllm, litellm, llamacpp
