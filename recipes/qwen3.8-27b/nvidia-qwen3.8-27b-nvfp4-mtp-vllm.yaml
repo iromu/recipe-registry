@@ -1,30 +1,33 @@
 recipe_version: "2"
 model: nvidia/Qwen3.8-27B-NVFP4
 runtime: vllm
-container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly-tf5:latest
+container: ghcr.io/spark-arena/dgx-vllm-eugr-nightly:latest
 
 metadata:
   description: |
     https://huggingface.co/nvidia/Qwen3.8-27B-NVFP4
-
 
 defaults:
   port: 8000
   host: 0.0.0.0
   tensor_parallel: 1
   pipeline_parallel: 1
-#  gpu_memory_utilization: 0.8 # 2.3x (vs max_model_len=262,144)
-  gpu_memory_utilization: 0.85 # 4.7x (vs max_model_len=131,072)
+  gpu_memory_utilization: 0.85 # 2.6x (vs max_model_len=262,144)
   max_model_len: 262144
-  max_num_batched_tokens: 32768
-  max_num_seqs: 8
+#  max_num_batched_tokens: 32768
+  max_num_seqs: 4 # tensor_parallel x 8
   load_format: instanttensor
   kv_cache_dtype: fp8_e4m3
   attention_backend: flashinfer
   tool_call_parser: qwen3_xml
   reasoning_parser: qwen3
   mm_encoder_tp_mode: data
-  speculative_config: '{"method": "mtp", "num_speculative_tokens": 3}'
+  speculative_config: '{"method": "mtp", "num_speculative_tokens": 5}'
+  thinking_config: '{"temperature": 0.8, "top_p": 0.95, "top_k": 20, "min_p": 0.0, "presence_penalty": 0.0, "repetition_penalty": 1.0}'
+  instruct_config: '{"temperature": 0.6, "top_p": 0.80, "top_k": 20, "min_p": 0.0, "presence_penalty": 1.5, "repetition_penalty": 1.0}'
+
+env:
+  VLLM_MARLIN_USE_ATOMIC_ADD: 1
 
 command: |
   vllm serve {model} \
@@ -32,7 +35,6 @@ command: |
     --host {host} \
     --port {port} \
     --max-model-len {max_model_len} \
-    --max-num-batched-tokens {max_num_batched_tokens} \
     --max-num-seqs {max_num_seqs} \
     --gpu-memory-utilization {gpu_memory_utilization} \
     --disable-custom-all-reduce \
@@ -43,11 +45,15 @@ command: |
     --kv-cache-dtype {kv_cache_dtype} \
     --load-format {load_format} \
     --mm-encoder-tp-mode {mm_encoder_tp_mode} \
+    --limit-mm-per-prompt.image 2 \
+    --limit-mm-per-prompt.video 0 \
     --seed 0 \
     --attention-backend {attention_backend} \
     --speculative-config '{speculative_config}' \
     --enable-prefix-caching \
     --enable-chunked-prefill \
-    --default-chat-template-kwargs '{"reasoning_effort":medium}' \
+    --default-chat-template-kwargs '{"reasoning_effort": "medium"}' \
     -tp {tensor_parallel} \
-    -pp {pipeline_parallel}
+    -pp {pipeline_parallel} \
+    --generation-config vllm \
+    --override-generation-config '{thinking_config}'

@@ -1,6 +1,6 @@
 # ⚡ Speed Leaderboard
 
-> Auto-generated from `benchmarks/benchy*.json` on 2026-09-22 10:48 
+> Auto-generated from `benchmarks/benchy*.json` on 2026-09-23 08:14 
 
 Generation throughput (tokens/sec) at **concurrency=1, context_size=0** (prompt=2048, response=128).
 Each recipe is listed independently — the same model with different configs appears as separate rows.
@@ -28,10 +28,10 @@ Each recipe is listed independently — the same model with different configs ap
 | 19 | qwen3.6-27b-fp8-dflash-vllm | 🔥 | Qwen/Qwen3.6-27B-FP8 | 32.9 ±7.9 | 2026-05-26 11:54:43Z |
 | 20 | Qwen3.8-Flash-Next-Single-DGX-Spark |  | qwen3.8-flash-next | 30.3 ±2.9 | 2026-09-06 10:06:48Z |
 | 21 | qwen3.6-27b-nvfp4-mtp-vllm | 📐 | nvidia/Qwen3.6-27B-NVFP4 | 29.7 ±4.3 | 2026-08-02 10:50:50Z |
-| 22 | qwen3.5-122b-a10b-nvfp4-mtp-vllm | 📐 | nvidia/Qwen3.5-122B-A10B-NVFP4 | 29.5 ±2.1 | 2026-06-06 23:30:21Z |
-| 23 | qwen3.6-27b-nvfp4-dflash-docker | 🔥 | Qwen3.6-27B-AEON-NVFP4-XS | 29.3 ±1.5 | 2026-05-16 09:25:13Z |
-| 24 | qwen3.6-27b-int4-autorun-mtp-vllm | 📐 | Intel/Qwen3.6-27B-int4-AutoRound | 26.7 ±1.3 | 2026-05-28 22:11:07Z |
-| 25 | nvidia-qwen3.8-27b-nvfp4-mtp-vllm | 📐 | nvidia/Qwen3.8-27B-NVFP4 | 25.2 ±1.5 | 2026-09-22 09:30:24Z |
+| 22 | nvidia-qwen3.8-27b-nvfp4-mtp-vllm | 📐 | nvidia/Qwen3.8-27B-NVFP4 | 29.6 ±3.6 | 2026-09-23 06:47:19Z |
+| 23 | qwen3.5-122b-a10b-nvfp4-mtp-vllm | 📐 | nvidia/Qwen3.5-122B-A10B-NVFP4 | 29.5 ±2.1 | 2026-06-06 23:30:21Z |
+| 24 | qwen3.6-27b-nvfp4-dflash-docker | 🔥 | Qwen3.6-27B-AEON-NVFP4-XS | 29.3 ±1.5 | 2026-05-16 09:25:13Z |
+| 25 | qwen3.6-27b-int4-autorun-mtp-vllm | 📐 | Intel/Qwen3.6-27B-int4-AutoRound | 26.7 ±1.3 | 2026-05-28 22:11:07Z |
 | 26 | nvidia-qwen3.6-27b-nvfp4-mtp-vllm | 📐 | nvidia/Qwen3.6-27B-NVFP4 | 24.1 ±3.8 | 2026-07-06 20:13:31Z |
 | 27 | unsloth-qwen3.8-27b-nvfp4-mtp-vllm | 📐 | unsloth/Qwen3.8-27B-NVFP4 | 21.1 ±2.5 | 2026-08-22 12:48:42Z |
 | 28 | qwopus3.6-27b-coder-compat-mtp-q4_k_s-llamacpp | 📐 | Jackrong/Qwopus3.6-27B-Coder-Compat-MTP-GGUF | 18.9 ±3.1 | 2026-06-23 20:36:13Z |
