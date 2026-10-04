@@ -1,22 +1,22 @@
-MODEL_TAG="nvidia/Qwen3.8-27B-NVFP4"
-MODEL_RECIPE="nvidia-qwen3.8-27b-nvfp4-mtp-vllm"
+MODEL_TAG="Qwen3.8-Flash-Next-UD-IQ4_XS"
+MODEL_RECIPE="strata-unsloth-ud-iq4_xs"
 
-MODEL_HOST=spark.local
+MODEL_HOST=localhost
 # vLLM (:8000), llama.cpp (:8080), SGLang (:30000), LiteLLM (:4000), Ollama (:11434), or TGI (:5000)
-MODEL_PORT=8000
+MODEL_PORT=8080
 
 
 # --backend: vllm, litellm, llamacpp
 uvx tool-eval-bench \
   --spec-bench --spec-method auto --spec-prompts "code,structured" \
-  --model ${MODEL_TAG} --backend vllm  \
+  --model ${MODEL_TAG} --backend llamacpp  \
   --base-url http://${MODEL_HOST}:${MODEL_PORT} && \
   latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
   cp -f $latest_file "benchmarks/spec_${MODEL_RECIPE}.md"
 
 uvx tool-eval-bench \
   --perf \
-  --model ${MODEL_TAG} --backend vllm  \
+  --model ${MODEL_TAG} --backend llamacpp  \
   --base-url http://${MODEL_HOST}:${MODEL_PORT} && \
   latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
   cp -f $latest_file "benchmarks/tool_${MODEL_RECIPE}.md"

@@ -1,6 +1,6 @@
 # ⚡ Speed Leaderboard
 
-> Auto-generated from `benchmarks/benchy*.json` on 2026-09-25 23:30 
+> Auto-generated from `benchmarks/benchy*.json` on 2026-10-05 00:32 
 
 Generation throughput (tokens/sec) at **concurrency=1, context_size=0** (prompt=2048, response=128).
 Each recipe is listed independently — the same model with different configs appears as separate rows.
@@ -32,16 +32,17 @@ Each recipe is listed independently — the same model with different configs ap
 | 23 | qwen3.5-122b-a10b-nvfp4-mtp-vllm | 📐 | nvidia/Qwen3.5-122B-A10B-NVFP4 | 29.5 ±2.1 | 2026-06-06 23:30:21Z |
 | 24 | qwen3.6-27b-nvfp4-dflash-docker | 🔥 | Qwen3.6-27B-AEON-NVFP4-XS | 29.3 ±1.5 | 2026-05-16 09:25:13Z |
 | 25 | qwen3.6-27b-int4-autorun-mtp-vllm | 📐 | Intel/Qwen3.6-27B-int4-AutoRound | 26.7 ±1.3 | 2026-05-28 22:11:07Z |
-| 26 | nvidia-qwen3.6-27b-nvfp4-mtp-vllm | 📐 | nvidia/Qwen3.6-27B-NVFP4 | 24.1 ±3.8 | 2026-07-06 20:13:31Z |
-| 27 | unsloth-qwen3.8-27b-nvfp4-mtp-vllm | 📐 | unsloth/Qwen3.8-27B-NVFP4 | 21.1 ±2.5 | 2026-08-22 12:48:42Z |
-| 28 | qwopus3.6-27b-coder-compat-mtp-q4_k_s-llamacpp | 📐 | Jackrong/Qwopus3.6-27B-Coder-Compat-MTP-GGUF | 18.9 ±3.1 | 2026-06-23 20:36:13Z |
-| 29 | gemma-4-e4b-it-bf16-vllm |  | google/gemma-4-E4B-it | 18.8 ±0.0 | 2026-07-16 20:07:38Z |
-| 30 | unsloth-qwen3.8-27b-nvfp4-dspark-vllm |  | unsloth/Qwen3.8-27B-NVFP4 | 17.9 ±0.4 | 2026-08-18 10:21:54Z |
-| 31 | DwarfStar |  | DeepSeek-V4-Flash-IQ2XXS-w2Q2K-AProjQ8-SExpQ8-OutQ8-chat-v2-imatrix-0731 | 12.4 ±3.1 | 2026-08-01 18:54:47Z |
-| 32 | gemma4-31b-it-nvfp4-mtp-vllm | 📐 | nvidia/Gemma-4-31B-IT-NVFP4 | 11.4 ±2.5 | 2026-07-16 23:33:59Z |
-| 33 | qwen3.6-27b-fp8-mtp-vllm | 📐 | Qwen/Qwen3.6-27B-FP8 | 10.2 ±0.8 | 2026-05-26 14:13:20Z |
-| 34 | qwen3.6-27b-q8_0-llama-cpp |  | unsloth/Qwen3.6-27B-GGUF | 8.5 ±0.4 | 2026-05-09 11:03:35Z |
-| 35 | gemma3-12b-it-bf16-vllm |  | google/gemma-3-12b-it | 8.0 ±0.0 | 2026-05-12 21:45:06Z |
+| 26 | strata-unsloth-ud-iq4_xs |  | Qwen3.8-Flash-Next-UD-IQ4_XS | 25.1 ±1.1 | 2026-10-04 23:31:37Z |
+| 27 | nvidia-qwen3.6-27b-nvfp4-mtp-vllm | 📐 | nvidia/Qwen3.6-27B-NVFP4 | 24.1 ±3.8 | 2026-07-06 20:13:31Z |
+| 28 | unsloth-qwen3.8-27b-nvfp4-mtp-vllm | 📐 | unsloth/Qwen3.8-27B-NVFP4 | 21.1 ±2.5 | 2026-08-22 12:48:42Z |
+| 29 | qwopus3.6-27b-coder-compat-mtp-q4_k_s-llamacpp | 📐 | Jackrong/Qwopus3.6-27B-Coder-Compat-MTP-GGUF | 18.9 ±3.1 | 2026-06-23 20:36:13Z |
+| 30 | gemma-4-e4b-it-bf16-vllm |  | google/gemma-4-E4B-it | 18.8 ±0.0 | 2026-07-16 20:07:38Z |
+| 31 | unsloth-qwen3.8-27b-nvfp4-dspark-vllm |  | unsloth/Qwen3.8-27B-NVFP4 | 17.9 ±0.4 | 2026-08-18 10:21:54Z |
+| 32 | DwarfStar |  | DeepSeek-V4-Flash-IQ2XXS-w2Q2K-AProjQ8-SExpQ8-OutQ8-chat-v2-imatrix-0731 | 12.4 ±3.1 | 2026-08-01 18:54:47Z |
+| 33 | gemma4-31b-it-nvfp4-mtp-vllm | 📐 | nvidia/Gemma-4-31B-IT-NVFP4 | 11.4 ±2.5 | 2026-07-16 23:33:59Z |
+| 34 | qwen3.6-27b-fp8-mtp-vllm | 📐 | Qwen/Qwen3.6-27B-FP8 | 10.2 ±0.8 | 2026-05-26 14:13:20Z |
+| 35 | qwen3.6-27b-q8_0-llama-cpp |  | unsloth/Qwen3.6-27B-GGUF | 8.5 ±0.4 | 2026-05-09 11:03:35Z |
+| 36 | gemma3-12b-it-bf16-vllm |  | google/gemma-3-12b-it | 8.0 ±0.0 | 2026-05-12 21:45:06Z |
 
 ### Notes
 
