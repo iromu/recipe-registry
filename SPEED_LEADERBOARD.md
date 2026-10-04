@@ -1,6 +1,6 @@
 # ⚡ Speed Leaderboard
 
-> Auto-generated from `benchmarks/benchy*.json` on 2026-09-23 08:14 
+> Auto-generated from `benchmarks/benchy*.json` on 2026-09-25 23:30 
 
 Generation throughput (tokens/sec) at **concurrency=1, context_size=0** (prompt=2048, response=128).
 Each recipe is listed independently — the same model with different configs appears as separate rows.

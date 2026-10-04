@@ -1,6 +1,6 @@
 # 🏆 Model Leaderboard
 
-> Auto-generated from `uvx tool-eval-bench --leaderboard` on 2026-09-23 08:14 
+> Auto-generated from `uvx tool-eval-bench --leaderboard` on 2026-09-25 23:30 
 
 | # | Model | Score | Rating | P/F | Sel | Prm | Chn | Rst | Err | Loc | Rsn | Ins | Ctx | Cod | Saf | Scl | Pln | Crt | Out | N | Tokens | Run |
 |---|-------|-------|--------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|---|--------|-----|
