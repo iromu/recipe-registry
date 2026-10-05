@@ -1,5 +1,5 @@
-MODEL_TAG="Qwen3.8-Flash-Next-UD-IQ4_XS"
-MODEL_RECIPE="strata-unsloth-ud-iq4_xs"
+MODEL_TAG="Qwen3.8-Flash-Next-GSQ-RCO-IQ1_M"
+MODEL_RECIPE="strata-coder-iq1_m"
 
 MODEL_HOST=localhost
 # vLLM (:8000), llama.cpp (:8080), SGLang (:30000), LiteLLM (:4000), Ollama (:11434), or TGI (:5000)
