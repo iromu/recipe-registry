@@ -1,5 +1,5 @@
-MODEL_TAG="Vontra/Qwen3.8-27B-MLX-4bit"
-MODEL_RECIPE="MiaAI-Lab-Qwen3.8-27B-DGX-Spark-TensorFold"
+MODEL_TAG="Vontra/Qwen3.8-Flash-Next-MLX-4bit-MTP"
+MODEL_RECIPE="MiaAI-Lab-Qwen3.8-Flash-Next-Single-DGX-Spark-TensorFold"
 
 MODEL_HOST=spark.local
 # vLLM (:8000), llama.cpp (:8080), SGLang (:30000), LiteLLM (:4000), Ollama (:11434), or TGI (:5000)
