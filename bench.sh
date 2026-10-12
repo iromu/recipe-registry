@@ -1,4 +1,4 @@
-MODEL_TAG="Vontra/Qwen3.8-Flash-Next-MLX-4bit-MTP"
+MODEL_TAG="azampatti/Qwen3.8-Flash-Next-125B-A5B-INT4-AutoRound"
 MODEL_RECIPE="MiaAI-Lab-Qwen3.8-Flash-Next-Single-DGX-Spark-TensorFold"
 
 MODEL_HOST=spark.local
@@ -7,21 +7,21 @@ MODEL_PORT=8000
 
 
 # --backend: vllm, litellm, llamacpp
-uvx tool-eval-bench \
+uvx tool-eval-bench@latest \
   --spec-bench --spec-method auto --spec-prompts "code,structured" \
-  --model ${MODEL_TAG} --backend llamacpp  \
+  --model ${MODEL_TAG} --backend tensorfold  \
   --base-url http://${MODEL_HOST}:${MODEL_PORT} && \
   latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
   cp -f $latest_file "benchmarks/spec_${MODEL_RECIPE}.md"
 
-uvx tool-eval-bench \
+uvx tool-eval-bench@latest \
   --perf \
-  --model ${MODEL_TAG} --backend llamacpp  \
+  --model ${MODEL_TAG} --backend tensorfold  \
   --base-url http://${MODEL_HOST}:${MODEL_PORT} && \
   latest_file=$(find runs -name '*.md' -type f | sort | tail -n1) && \
   cp -f $latest_file "benchmarks/tool_${MODEL_RECIPE}.md"
 
-uvx llama-benchy \
+uvx llama-benchy@latest \
   --base-url http://${MODEL_HOST}:${MODEL_PORT}/v1 \
   --model $MODEL_TAG \
   --depth 0 4096 8192 \
