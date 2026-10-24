@@ -31,7 +31,7 @@ env:
 
 command: |
   vllm serve {model} \
-    --served-model-name Qwen3.8-27B {model} \
+    --served-model-name Qwen Qwen3.8-27B nvidia/Qwen3.8-27B-NVFP4 \
     --host {host} \
     --port {port} \
     --max-model-len {max_model_len} \
